@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>To Do List & Target Kerja</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/app-icon.png">
+  <link rel="apple-touch-icon" href="assets/app-icon.png">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="To Do List">
+  <!-- Modern SaaS Typography: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Backdrop for Mobile Sidebar Drawer -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- LEFT SIDEBAR NAVIGATION -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <!-- Sidebar Brand / Logo -->
+      <div class="sidebar-brand">
+        <div class="brand-logo-wrapper">
+          <img src="assets/app-icon.png" class="brand-logo-img" alt="Logo To Do List">
+        </div>
+        <div class="brand-info">
+          <div class="brand-title">To Do List <span class="app-version" id="app-version"></span></div>
+          <div class="brand-subtitle">Target Kerja Mandiri</div>
+        </div>
+      </div>
+
+      <!-- Main Navigation Menu -->
+      <div class="sidebar-nav-title">MENU UTAMA</div>
+      <nav class="sidebar-nav">
+        <!-- Target Impian (Halaman Pertama) -->
+        <button type="button" class="sidebar-nav-item active" data-page="vision" id="nav-item-vision">
+          <div class="nav-icon-title">
+            <span class="nav-icon">🌟</span>
+            <div class="nav-label-box">
+              <span class="nav-label">Target Impian</span>
+              <span class="nav-desc">Vision Board &amp; Motivasi</span>
+            </div>
+          </div>
+          <span class="nav-badge" id="nav-badge-goals">3</span>
+        </button>
+
+        <!-- Jobdesk & Tugas -->
+        <button type="button" class="sidebar-nav-item" data-page="jobdesk" id="nav-item-jobdesk">
+          <div class="nav-icon-title">
+            <span class="nav-icon">📋</span>
+            <div class="nav-label-box">
+              <span class="nav-label">Jobdesk &amp; Tugas</span>
+              <span class="nav-desc">Harian, Umum &amp; Target</span>
+            </div>
+          </div>
+          <span class="nav-badge" id="nav-badge-todos">0</span>
+        </button>
+
+        <!-- Kalender Agenda -->
+        <button type="button" class="sidebar-nav-item" data-page="calendar" id="nav-item-calendar">
+          <div class="nav-icon-title">
+            <span class="nav-icon">📅</span>
+            <div class="nav-label-box">
+              <span class="nav-label">Kalender Agenda</span>
+              <span class="nav-desc">Agenda &amp; Riwayat Harian</span>
+            </div>
+          </div>
+          <span class="nav-badge" id="nav-badge-agendas">0</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Section: Kategori Toko & Akun -->
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button type="button" id="btn-mobile-access" class="sidebar-footer-btn btn-highlight-mobile" style="display: none;" title="Akses HP">
+          <span>📱</span> Akses Lewat HP
+        </button>
+        <button type="button" id="btn-open-data" class="sidebar-footer-btn" title="Buka folder data untuk backup">
+          <span>📁</span> Buka Data
+        </button>
+        <button type="button" id="btn-theme-toggle" class="sidebar-footer-btn" title="Ganti Mode Gelap / Terang">
+          <span>🌙</span> Mode Gelap
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT WRAPPER -->
+    <div class="app-main-content">
+      <!-- Top Sticky Navbar Header -->
+      <header class="top-navbar">
+        <div class="top-navbar-left">
+          <button type="button" class="btn-menu-hamburger" id="btn-mobile-menu-toggle" aria-label="Buka Menu Sidebar">
+            ☰
+          </button>
+          <div class="page-title-icon" id="top-page-icon">🌟</div>
+          <div>
+            <h1 class="page-title" id="top-page-title">Harapan &amp; Target Impian Bos Ricko</h1>
+            <p class="page-subtitle" id="top-page-subtitle">Fokus ikhtiar kita hari ini untuk mewujudkan target-target mulia ini bersama keluarga tercinta.</p>
+          </div>
+        </div>
+        <div class="top-navbar-right">
+          <div class="cloud-status-pill" id="cloud-status-pill" title="Status Database Cloud Supabase">
+            <span class="cloud-dot" id="cloud-dot"></span>
+            <span id="cloud-status-text">☁️ Supabase</span>
+          </div>
+          <div class="today-date-pill" id="today-date-display"></div>
+          <div class="top-navbar-actions">
+            <!-- Hidden button to satisfy any legacy reference if needed -->
+            <button id="btn-toggle-vision" style="display:none;"></button>
+            <div id="top-context-actions">
+              <!-- Rendered or switched dynamically per active page -->
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Pages Container -->
+      <div class="pages-wrapper">
+        <!-- ============================================== -->
+        <!-- HALAMAN 1: TARGET IMPIAN (DEFAULT / LANDING)  -->
+        <!-- ============================================== -->
+        <section id="page-vision" class="app-page active">
+          <section id="section-vision" class="panel vision-panel">
+            <!-- Quote Box Motivasi -->
+            <div class="quote-box">
+              <div class="quote-head">
+                <span class="quote-badge">
+                  <span>⚡</span> KATA-KATA PENYEMANGAT BOS RICKO
+                </span>
+                <div class="quote-actions">
+                  <button type="button" class="btn btn-sm btn-secondary" id="btn-shuffle-quote" title="Ganti kata-kata motivasi">
+                    ↻ Ganti Semangat
+                  </button>
+                  <button type="button" class="btn btn-sm btn-secondary" id="btn-edit-quote" title="Tulis motto sendiri">
+                    ✏️ Tulis Sendiri
+                  </button>
+                </div>
+              </div>
+              <p class="quote-text" id="quote-content">
+                “Bismillah! Setiap baris konten, video, dan postingan yang tim buat hari ini adalah langkah nyata menjemput rezeki berkah.”
+              </p>
+              <span class="quote-author" id="quote-author">— Pesan Harian Markas</span>
+            </div>
+
+            <!-- Vision Board Cards -->
+            <div class="vision-board">
+              <div class="vision-head">
+                <div class="title-with-badge">
+                  <span class="icon-lg">🌟</span>
+                  <div>
+                    <h3>Vision Board Harapan &amp; Target Impian</h3>
+                    <p>Fokus ikhtiar dan doa kita setiap hari untuk membahagiakan keluarga tercinta.</p>
+                  </div>
+                </div>
+                <div class="vision-actions">
+                  <button type="button" class="btn btn-primary btn-sm" id="btn-add-goal">
+                    ＋ Tambah Impian
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-goals" title="Kembalikan ke target default (HP Tecno, NMAX, Umroh)">
+                    ↺ Reset Impian
+                  </button>
+                </div>
+              </div>
+
+              <!-- Summary Banner Impian -->
+              <div class="vision-summary-bar" id="vision-summary-bar">
+                <!-- Rendered dynamically -->
+              </div>
+
+              <div id="goals-grid" class="goals-grid">
+                <!-- Dynamic goal cards -->
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- HALAMAN 2: JOBDESK & TUGAS (TO DO LIST)        -->
+        <!-- ============================================== -->
+        <section id="page-jobdesk" class="app-page" style="display: none;">
+          <!-- Quick Stats Bar -->
+          <div class="stats-bar">
+            <div class="stat-pill" id="stat-target" title="Jumlah target sasaran kerja">
+              <span class="icon">🎯</span> <span id="stat-target-num">0</span> Target
+            </div>
+            <div class="stat-pill" id="stat-daily" title="Jobdesk harian otomatis reset tiap hari">
+              <span class="icon">🔄</span> <span id="stat-daily-num">0</span> Harian
+            </div>
+            <div class="stat-pill" id="stat-general" title="Jobdesk umum sekali jalan">
+              <span class="icon">📌</span> <span id="stat-general-num">0</span> Umum
+            </div>
+            <div class="stat-pill pill-warning" id="stat-active" title="Tugas yang belum selesai">
+              <span class="icon">⏳</span> <span id="stat-active-num">0</span> Belum Selesai
+            </div>
+            <div class="stat-pill pill-success" id="stat-done" title="Tugas yang sudah selesai">
+              <span class="icon">✅</span> <span id="stat-done-num">0</span> Selesai
+            </div>
+          </div>
+
+          <!-- Category Bar (Tab Kategori Toko & Akun) -->
+          <div class="category-section">
+            <div class="category-header">
+              <div class="category-label">
+                <span>📂</span> <strong>Kategori Toko &amp; Akun:</strong>
+              </div>
+              <div class="category-header-actions">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-manage-categories" title="Kelola dan hapus kategori">
+                  ⚙️ Kelola Kategori
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="btn-add-category">
+                  ＋ Tambah Kategori
+                </button>
+              </div>
+            </div>
+            <div id="category-tabs" class="category-tabs">
+              <!-- Rendered dynamically via app.js -->
+            </div>
+          </div>
+
+          <main class="app-main">
+            <!-- Action Bar Minimalis Tambah Tugas -->
+            <div class="jobdesk-action-bar">
+              <div class="jobdesk-active-info">
+                <span class="active-cat-icon" id="jobdesk-active-cat-icon">🏪</span>
+                <div>
+                  <h3 class="active-cat-name" id="jobdesk-active-cat-name">Toko Shopee MP3 Player</h3>
+                  <p class="active-cat-desc" id="jobdesk-active-cat-desc">Menampilkan daftar pekerjaan khusus kategori ini</p>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-add-jobdesk" id="btn-open-todo-modal">
+                <span>＋</span> Tambah Tugas Baru
+              </button>
+            </div>
+
+            <!-- Panel Target Sasaran (Cards Grid) -->
+            <section id="panel-targets" class="panel targets-panel" style="display: none;">
+              <div class="panel-header">
+                <div class="title-with-badge">
+                  <span class="icon-lg">🎯</span>
+                  <div>
+                    <h3>Target &amp; Harapan Kategori</h3>
+                    <p>Harapan capaian dan sasaran utama untuk setiap kategori bisnis dan akun.</p>
+                  </div>
+                </div>
+                <span class="pill-badge" id="badge-target-count">0 Target</span>
+              </div>
+              <div id="targets-grid" class="targets-grid"></div>
+            </section>
+
+            <!-- Panel Daftar Jobdesk & Tugas -->
+            <section class="panel list-panel">
+              <div class="toolbar">
+                <!-- Filter Buttons (Hanya Semua, Harian & Umum sesuai permintaan) -->
+                <div class="filter-group">
+                  <button type="button" class="btn-filter active" data-filter="all">Semua (<span id="c-all">0</span>)</button>
+                  <button type="button" class="btn-filter" data-filter="daily">🔄 Harian (<span id="c-daily">0</span>)</button>
+                  <button type="button" class="btn-filter" data-filter="general">📌 Umum (<span id="c-general">0</span>)</button>
+                  <span id="c-target" style="display:none;">0</span>
+                  <span id="c-active" style="display:none;">0</span>
+                  <span id="c-completed" style="display:none;">0</span>
+                </div>
+
+                <!-- Search & Actions -->
+                <div class="toolbar-actions">
+                  <div class="search-box">
+                    <input type="text" id="input-search" placeholder="🔍 Cari tugas atau kategori...">
+                  </div>
+                  <button type="button" id="btn-clear-completed" class="btn btn-secondary-danger btn-sm" title="Hapus tugas umum yang sudah selesai">
+                    Bersihkan yang selesai
+                  </button>
+                </div>
+              </div>
+
+              <!-- Task List Items -->
+              <div id="todo-items-list" class="todo-items-list">
+                <!-- Dynamic rendering -->
+              </div>
+            </section>
+          </main>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- HALAMAN 3: KALENDER AGENDA                     -->
+        <!-- ============================================== -->
+        <section id="page-calendar" class="app-page" style="display: none;">
+          <!-- Panel Kalender Pelacak & Riwayat Kerja Harian -->
+          <section id="panel-calendar" class="panel calendar-panel">
+            <div class="panel-header">
+              <div class="title-with-badge">
+                <span class="icon-lg">📅</span>
+                <div>
+                  <h3>Kalender Pelacak, Agenda &amp; Riwayat Kerja Harian</h3>
+                  <p>Jadwalkan agenda kerja di tanggal tertentu, pantau ketercapaian tugas harian, dan cek kerjaan kemarin.</p>
+                </div>
+              </div>
+              <div class="calendar-top-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="btn-top-add-agenda" title="Tambah agenda kerja di kalender">
+                  ＋ Tambah Agenda
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-cal-yesterday" title="Lihat riwayat kerja kemarin">
+                  ⏮ Cek Kemarin
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-cal-today" title="Kembali ke hari ini">
+                  📅 Hari Ini
+                </button>
+              </div>
+            </div>
+
+            <div class="calendar-layout">
+              <!-- Sisi Kiri: Widget Kalender Bulanan -->
+              <div class="calendar-widget">
+                <div class="cal-nav">
+                  <button type="button" class="btn-cal-nav" id="btn-cal-prev" title="Bulan sebelumnya">◀</button>
+                  <h4 id="cal-month-year">November 2026</h4>
+                  <button type="button" class="btn-cal-nav" id="btn-cal-next" title="Bulan berikutnya">▶</button>
+                </div>
+
+                <div class="cal-weekdays">
+                  <span>Sen</span>
+                  <span>Sel</span>
+                  <span>Rab</span>
+                  <span>Kam</span>
+                  <span>Jum</span>
+                  <span>Sab</span>
+                  <span>Min</span>
+                </div>
+
+                <div id="cal-days-grid" class="cal-days-grid">
+                  <!-- Rendered via JavaScript -->
+                </div>
+
+                <div class="cal-legend">
+                  <span class="legend-item"><i class="dot dot-done"></i> 100% Selesai</span>
+                  <span class="legend-item"><i class="dot dot-partial"></i> Sebagian Selesai</span>
+                  <span class="legend-item"><i class="dot dot-missed"></i> Ada Belum Selesai</span>
+                  <span class="legend-item"><i class="dot dot-today"></i> Hari Ini</span>
+                </div>
+              </div>
+
+              <!-- Sisi Kanan: Detail Riwayat Tanggal yang Dipilih -->
+              <div class="calendar-details" id="cal-details-panel">
+                <div class="cal-detail-header">
+                  <div>
+                    <span class="cal-detail-badge" id="cal-detail-relative">Kemarin</span>
+                    <h4 id="cal-detail-date">Kamis, 12 November 2026</h4>
+                  </div>
+                  <div class="cal-detail-score" id="cal-detail-score">1 / 3 Selesai (33%)</div>
+                </div>
+
+                <!-- Progress bar tanggal terpilih -->
+                <div class="progress-track" style="margin: 8px 0 14px;">
+                  <div class="progress-fill" id="cal-detail-progress-fill" style="width: 33%;"></div>
+                </div>
+
+                <!-- Kolom Agenda Terjadwal di Tanggal Terpilih -->
+                <div class="cal-tasks-group cal-agenda-group" style="margin-bottom: 14px;">
+                  <div class="cal-agenda-header">
+                    <div class="cal-tasks-subtitle text-primary">
+                      <span>📌</span> <strong>Agenda Terjadwal (<span id="cal-count-agendas">0</span> Agenda):</strong>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-xs" id="btn-quick-add-agenda">
+                      ＋ Tambah Agenda
+                    </button>
+                  </div>
+                  <div id="cal-list-agendas" class="cal-sublist">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+
+                <!-- Kolom Tugas yang Belum Dilakukan -->
+                <div class="cal-tasks-group">
+                  <div class="cal-tasks-subtitle text-danger">
+                    <span>⚠️</span> <strong>Belum Dilakukan (<span id="cal-count-uncompleted">0</span> Tugas):</strong>
+                  </div>
+                  <div id="cal-list-uncompleted" class="cal-sublist">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+
+                <!-- Kolom Tugas yang Sudah Selesai -->
+                <div class="cal-tasks-group" style="margin-top: 12px;">
+                  <div class="cal-tasks-subtitle text-success">
+                    <span>✅</span> <strong>Sudah Selesai (<span id="cal-count-completed">0</span> Tugas):</strong>
+                  </div>
+                  <div id="cal-list-completed" class="cal-sublist">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODALS                                         -->
+    <!-- ============================================== -->
+
+    <!-- Modal Tambah Tugas Baru (Pop-up Minimalis) -->
+    <div id="todo-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="title-with-badge">
+            <span class="icon-lg">📝</span>
+            <div>
+              <h3 id="todo-modal-heading">Tambah Tugas &amp; Pekerjaan Baru</h3>
+              <p>Tambahkan jobdesk harian, jobdesk umum, atau target untuk kategori ini</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close" id="btn-close-todo-modal">&times;</button>
+        </div>
+        <form id="todo-form" class="modal-body" novalidate>
+          <div class="form-group-full">
+            <label for="input-title">Judul Pekerjaan / Target:</label>
+            <input 
+              type="text" 
+              id="input-title" 
+              placeholder="Tulis judul pekerjaan harian, jobdesk umum, atau target..." 
+              maxlength="250" 
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="modal-form-grid">
+            <!-- Kategori Toko / Akun dengan Tombol Cepat Tambah Kategori -->
+            <div class="form-group-full">
+              <label for="select-category">Kategori Toko / Akun:</label>
+              <div class="select-with-add-row">
+                <select id="select-category">
+                  <!-- Populated dynamically -->
+                </select>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-add-cat-from-form" title="Tambah Kategori Baru">
+                  ＋ Kategori
+                </button>
+              </div>
+            </div>
+
+            <div class="modal-two-cols">
+              <!-- Jenis Tugas -->
+              <div class="form-group-full">
+                <label for="select-type">Jenis / Sifat:</label>
+                <select id="select-type">
+                  <option value="daily">🔄 Jobdesk Harian (Auto Reset)</option>
+                  <option value="general" selected>📌 Jobdesk Umum (Ada Sub-Jobdesk &amp; %)</option>
+                  <option value="target">🎯 Target Kategori (Harapan)</option>
+                </select>
+              </div>
+
+              <!-- Prioritas -->
+              <div class="form-group-full">
+                <label for="select-priority">Prioritas:</label>
+                <select id="select-priority">
+                  <option value="medium" selected>⚡ Sedang</option>
+                  <option value="high">🔥 Tinggi</option>
+                  <option value="low">☕ Rendah</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div id="todo-modal-error" class="modal-error-message" style="display: none;"></div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-todo-modal">Batal</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit">Simpan Tugas</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Tambah Kategori Baru -->
+    <div id="category-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>📂 Tambah Kategori Toko / Akun Baru</h3>
+          <button type="button" class="btn-close" id="btn-close-category-modal">&times;</button>
+        </div>
+        <form id="category-form" class="modal-body" novalidate>
+          <div class="form-group-full">
+            <label for="new-cat-name">Nama Kategori / Toko / Akun:</label>
+            <input 
+              type="text" 
+              id="new-cat-name" 
+              placeholder="Ketik nama kategori / toko di sini..." 
+              maxlength="80"
+              autocomplete="off"
+            >
+            <small style="display: block; margin-top: 5px; font-size: 0.78rem; color: var(--text-muted);">
+              💡 <em>Ketik nama toko Anda sendiri, atau klik salah satu rekomendasi cepat di bawah:</em>
+            </small>
+          </div>
+
+          <!-- Quick Preset Chips -->
+          <div class="cat-quick-presets">
+            <div class="preset-label">⚡ Rekomendasi Cepat (Klik untuk memilih langsung):</div>
+            <div class="preset-chips-grid">
+              <button type="button" class="chip-preset" data-name="Ricko's Media Player - Shopee" data-icon="🏪" data-color="#ef8e06">🏪 Ricko's Media Player</button>
+              <button type="button" class="chip-preset" data-name="Toko Shopee MP3 Player" data-icon="🏪" data-color="#f97316">🏪 Shopee MP3</button>
+              <button type="button" class="chip-preset" data-name="Toko TikTok Shop Fashion" data-icon="📱" data-color="#ec4899">📱 TikTok Shop</button>
+              <button type="button" class="chip-preset" data-name="Toko Tokopedia Elektronik" data-icon="🛍️" data-color="#10b981">🛍️ Tokopedia</button>
+              <button type="button" class="chip-preset" data-name="Toko Zyra Jewelry" data-icon="💎" data-color="#a855f7">💎 Zyra Jewelry</button>
+              <button type="button" class="chip-preset" data-name="Akun Affiliate @reviewsepatucowok" data-icon="👟" data-color="#3b82f6">👟 Affiliate Sepatu</button>
+              <button type="button" class="chip-preset" data-name="Operasional & Markas" data-icon="🏢" data-color="#6366f1">🏢 Operasional</button>
+              <button type="button" class="chip-preset" data-name="Bisnis & Proyek Baru" data-icon="💼" data-color="#eab308">💼 Bisnis Baru</button>
+              <button type="button" class="chip-preset" data-name="Reseller & Gudang" data-icon="📦" data-color="#06b6d4">📦 Reseller</button>
+            </div>
+          </div>
+
+          <div class="form-options-row modal-row">
+            <div class="form-group">
+              <label for="new-cat-icon">Emoji Ikon:</label>
+              <input type="text" id="new-cat-icon" placeholder="🏪" value="🏪" style="width: 60px;" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label for="new-cat-color">Warna Penanda:</label>
+              <input type="color" id="new-cat-color" value="#6366f1" style="width: 50px; height: 32px; padding: 2px;">
+            </div>
+          </div>
+
+          <!-- Pesan Error / Bantuan Kategori -->
+          <div id="cat-modal-error" class="modal-error-message" style="display: none;"></div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-category-modal">Batal</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-category">Simpan Kategori</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Kelola Kategori -->
+    <div id="manage-category-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>⚙️ Kelola Kategori Bisnis &amp; Akun</h3>
+          <button type="button" class="btn-close" id="btn-close-manage-category-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            Hapus kategori yang tidak lagi digunakan atau buat kategori baru:
+          </p>
+          <div id="manage-categories-list" class="manage-categories-list">
+            <!-- Dynamic Category List -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btn-manage-add-new-cat">＋ Buat Kategori Baru</button>
+          <button type="button" class="btn btn-secondary" id="btn-close-manage-category-modal-bottom">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Tambah / Edit Agenda Kalender -->
+    <div id="agenda-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="agenda-modal-heading">📅 Tambah Agenda Kerja</h3>
+          <button type="button" class="btn-close" id="btn-close-agenda-modal">&times;</button>
+        </div>
+        <form id="agenda-form" class="modal-body">
+          <input type="hidden" id="agenda-id">
+          <div class="form-group-full">
+            <label for="agenda-title">Judul Agenda / Rencana Kerja:</label>
+            <input type="text" id="agenda-title" placeholder="Misal: Buat 10 video promosi Shopee MP3 Player" required maxlength="250">
+          </div>
+          <div class="form-options-row modal-row">
+            <div class="form-group">
+              <label for="agenda-date">Tanggal Rencana:</label>
+              <input type="date" id="agenda-date" required>
+            </div>
+            <div class="form-group">
+              <label for="agenda-time">Waktu / Jam (Opsional):</label>
+              <input type="time" id="agenda-time" style="width: 110px;">
+            </div>
+            <div class="form-group">
+              <label for="agenda-category">Kategori / Akun:</label>
+              <select id="agenda-category">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+          </div>
+          <div class="form-group-full">
+            <label for="agenda-note">Catatan / Detail Agenda:</label>
+            <textarea id="agenda-note" rows="2" placeholder="Catatan brief, sample barang, target upload..."></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-agenda-modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Agenda</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Edit Dialog (Todo / Target) -->
+    <div id="edit-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>✏️ Edit Tugas / Target</h3>
+          <button type="button" class="btn-close" id="btn-close-modal">&times;</button>
+        </div>
+        <form id="edit-form" class="modal-body">
+          <input type="hidden" id="edit-id">
+          <div class="form-group-full">
+            <label for="edit-title">Judul Pekerjaan:</label>
+            <input type="text" id="edit-title" required maxlength="250">
+          </div>
+          <div class="modal-form-grid">
+            <div class="form-group-full">
+              <label for="edit-category">Kategori / Akun:</label>
+              <select id="edit-category">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="modal-two-cols">
+              <div class="form-group-full">
+                <label for="edit-type">Jenis:</label>
+                <select id="edit-type">
+                  <option value="daily">🔄 Jobdesk Harian (Auto Reset)</option>
+                  <option value="general">📌 Jobdesk Umum (Ada Sub-Jobdesk &amp; %)</option>
+                  <option value="target">🎯 Target Kategori (Harapan &amp; Sasaran)</option>
+                </select>
+              </div>
+              <div class="form-group-full">
+                <label for="edit-priority">Prioritas:</label>
+                <select id="edit-priority">
+                  <option value="high">🔥 Tinggi</option>
+                  <option value="medium">⚡ Sedang</option>
+                  <option value="low">☕ Rendah</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Tambah / Edit Target Impian -->
+    <div id="goal-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="goal-modal-heading">🌟 Tambah Target Impian</h3>
+          <button type="button" class="btn-close" id="btn-close-goal-modal">&times;</button>
+        </div>
+        <form id="goal-form" class="modal-body">
+          <input type="hidden" id="goal-id">
+          <div class="form-group-full">
+            <label for="goal-title">Nama Target Impian:</label>
+            <input type="text" id="goal-title" placeholder="Contoh: Beli Laptop Baru / Renovasi Kamar" required maxlength="150">
+          </div>
+          <div class="form-options-row modal-row">
+            <div class="form-group">
+              <label for="goal-category">Kategori:</label>
+              <input type="text" id="goal-category" placeholder="Gadget / Kendaraan / Ibadah" maxlength="60">
+            </div>
+            <div class="form-group">
+              <label for="goal-icon">Emoji Ikon:</label>
+              <input type="text" id="goal-icon" placeholder="🎯" style="width: 60px;" maxlength="4" value="🎯">
+            </div>
+            <div class="form-group">
+              <label for="goal-price">Estimasi Biaya / Nilai:</label>
+              <input type="text" id="goal-price" placeholder="Contoh: Rp 15.000.000" maxlength="60">
+            </div>
+          </div>
+          <div class="form-group-full">
+            <label for="goal-image">Foto Sampul (Pilih Opsi atau Ketik Path):</label>
+            <select id="goal-image-select">
+              <option value="">-- Tanpa Foto / Kustom --</option>
+              <option value="assets/targets/target-tecno.jpg">📱 HP Tecno Camon 50 Pro</option>
+              <option value="assets/targets/target-nmax.jpg">🛵 Yamaha NMAX</option>
+              <option value="assets/targets/target-umroh.jpg">🕋 Ka'bah &amp; Umroh</option>
+            </select>
+            <input type="text" id="goal-image" placeholder="Path file gambar (misal: assets/targets/target-tecno.jpg)" style="margin-top:6px;">
+          </div>
+          <div class="form-group-full">
+            <label for="goal-note">Catatan / Niat Ikhtiar:</label>
+            <textarea id="goal-note" rows="3" placeholder="Tuliskan niat baik dan alasan memperjuangkan impian ini..." style="width:100%;padding:8px 12px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:var(--radius-sm);color:var(--text-main);font-family:inherit;"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-goal-modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Impian</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Lightbox Modal untuk Zoom Foto Nyata -->
+    <div id="lightbox-modal" class="modal-backdrop" style="display: none;">
+      <div class="lightbox-card">
+        <button type="button" class="btn-close lightbox-close" id="btn-close-lightbox">&times;</button>
+        <img id="lightbox-img" src="" alt="Foto Nyata">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+      </div>
+    </div>
+
+    <!-- Modal Akses Lewat HP & QR Code -->
+    <div id="mobile-access-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card modal-mobile-access">
+        <div class="modal-header">
+          <h3>📱 Akses To Do List Lewat HP (Smartphone)</h3>
+          <button type="button" class="btn-close" id="btn-close-mobile-modal">&times;</button>
+        </div>
+        <div class="modal-body modal-mobile-body">
+          <div class="server-status-pill">
+            <span class="status-indicator-dot"></span>
+            <span id="mobile-server-status-text">Server Web Aktif di Wi-Fi Lokal</span>
+          </div>
+
+          <!-- QR Code Container -->
+          <div class="mobile-qr-wrapper">
+            <div id="mobile-qr-box" class="mobile-qr-box">
+              <!-- Rendered dynamically as SVG -->
+            </div>
+            <div class="qr-scan-hint">📷 Arahkan kamera HP ke QR Code di atas</div>
+          </div>
+
+          <!-- Link Box with Copy Button -->
+          <div class="mobile-url-box">
+            <div class="mobile-url-label">Alamat Web di HP:</div>
+            <div class="mobile-url-row">
+              <input type="text" id="mobile-url-input" readonly value="http://192.168.8.101:3000">
+              <button type="button" class="btn btn-primary btn-sm" id="btn-copy-mobile-url">
+                📋 Salin Link
+              </button>
+            </div>
+          </div>
+
+          <!-- Petunjuk Pemakaian 3 Langkah -->
+          <div class="mobile-steps-guide">
+            <div class="step-guide-title">🚀 3 Langkah Mudah Akses dari HP:</div>
+            <div class="step-item">
+              <span class="step-num">1</span>
+              <div>Pastikan HP &amp; Laptop terhubung ke <strong>Wi-Fi yang sama</strong> (atau nyalakan Hotspot HP ke Laptop).</div>
+            </div>
+            <div class="step-item">
+              <span class="step-num">2</span>
+              <div><strong>Scan QR Code</strong> dengan kamera HP atau buka Chrome / Safari dan ketik alamat di atas.</div>
+            </div>
+            <div class="step-item">
+              <span class="step-num">3</span>
+              <div>Bisa di-install sebagai aplikasi HP: tekan menu browser lalu pilih <strong>"Tambahkan ke Layar Utama" (Install)</strong>.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-close-mobile-modal-bottom">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION (Tampil Khusus di Layar HP) -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+      <button type="button" class="mobile-nav-btn active" data-page="vision" id="mob-nav-vision">
+        <span class="mob-icon">🌟</span>
+        <span class="mob-label">Impian</span>
+      </button>
+      <button type="button" class="mobile-nav-btn" data-page="jobdesk" id="mob-nav-jobdesk">
+        <span class="mob-icon">📋</span>
+        <span class="mob-label">Jobdesk</span>
+        <span class="mob-badge" id="mob-badge-todos">0</span>
+      </button>
+      <button type="button" class="mobile-nav-btn" data-page="calendar" id="mob-nav-calendar">
+        <span class="mob-icon">📅</span>
+        <span class="mob-label">Agenda</span>
+      </button>
+      <button type="button" class="mobile-nav-btn" id="mob-btn-categories">
+        <span class="mob-icon">📂</span>
+        <span class="mob-label">Kategori</span>
+      </button>
+    </nav>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="qr.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

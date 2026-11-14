@@ -1,0 +1,39 @@
+{
+  "goals": [
+    {
+      "id": "goal-tecno",
+      "title": "Beli HP Tecno Camon 50 Pro",
+      "category": "Gadget & Kerja AI",
+      "icon": "📱",
+      "image": "assets/targets/target-tecno.jpg",
+      "targetPrice": "Rp 4.500.000",
+      "status": "on_progress",
+      "note": "Senjata tempur baru untuk kendali 6 studio AI, foto & video jernih, dan pantau bisnis di genggaman setiap saat.",
+      "targetDate": "2026"
+    },
+    {
+      "id": "goal-nmax",
+      "title": "Beli Motor Yamaha NMAX",
+      "category": "Kendaraan Keluarga",
+      "icon": "🛵",
+      "image": "assets/targets/target-nmax.jpg",
+      "targetPrice": "Rp 35.000.000",
+      "status": "on_progress",
+      "note": "Kendaraan andalan keluarga yang nyaman, gagah, dan siap mengantar rezeki serta mobilitas harian.",
+      "targetDate": "2026"
+    },
+    {
+      "id": "goal-umroh",
+      "title": "Umroh Bareng Istri",
+      "category": "Ibadah Suci & Berkah",
+      "icon": "🕋",
+      "image": "assets/targets/target-umroh.jpg",
+      "targetPrice": "Paket Berdua Makkah & Madinah",
+      "status": "on_progress",
+      "note": "Impian suci berdua bersama istri tercinta ke Baitullah Makkah & Madinah. Ibadah khusyuk, doa terkabul, barokah dunia dan akhirat.",
+      "targetDate": "2026 / 2027"
+    }
+  ],
+  "customQuote": "",
+  "currentQuoteIndex": 1
+}

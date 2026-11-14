@@ -1,0 +1,19 @@
+{
+  "name": "to-do-list",
+  "version": "1.0.6",
+  "description": "Aplikasi To Do List & Target Kerja Mandiri dengan Sidebar Navigation Dashboard, Target Impian Halaman Pertama, Jobdesk Harian/Umum, Kalender Agenda, dan Rekomendasi Kategori Cepat",
+  "main": "src/main.js",
+  "author": "Ricko",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "electron": "electron .",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "electron": "^44.3.0"
+  }
+}
