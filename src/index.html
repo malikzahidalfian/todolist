@@ -203,47 +203,28 @@
             </div>
           </div>
 
-          <!-- Category Bar (Tab Kategori Toko & Akun Berkelompok & Bisa Dilipat) -->
-          <div class="category-section" id="category-section">
-            <div class="category-header">
-              <div class="category-label" id="category-collapse-toggle" style="cursor: pointer;" title="Klik untuk melipat atau membuka daftar kategori">
-                <span class="cat-fold-arrow" id="cat-fold-arrow">▼</span>
-                <span>📂</span> <strong>Kategori Toko &amp; Akun</strong>
-                <span class="cat-active-pill" id="cat-active-pill" style="display: none;"></span>
-              </div>
-              <div class="category-header-actions">
-                <button type="button" class="btn btn-secondary btn-sm btn-fold-toggle" id="btn-toggle-fold-cat" title="Lipat / Buka Kategori">
-                  <span id="cat-fold-btn-icon">▲</span> <span id="cat-fold-btn-text">Lipat Kategori</span>
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-manage-categories" title="Kelola dan hapus kategori">
-                  ⚙️ Kelola Kategori
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" id="btn-add-category">
-                  ＋ Tambah Kategori
-                </button>
-              </div>
+          <!-- Legacy Category Section (Hidden from top, categories placed in bottom scroll bar) -->
+          <div class="category-section" id="category-section" style="display: none !important;">
+            <div id="category-collapse-toggle">
+              <span id="cat-fold-arrow"></span>
+              <span id="cat-active-pill"></span>
             </div>
-            <div id="category-tabs" class="category-tabs">
-              <!-- Rendered dynamically via app.js -->
-            </div>
+            <button type="button" id="btn-toggle-fold-cat"></button>
+            <button type="button" id="btn-manage-categories"></button>
           </div>
 
-          <!-- Sticky Active Category Indicator (Tetap muncul / ikut saat di-scroll ke bawah) -->
-          <div class="jobdesk-sticky-cat-bar" id="jobdesk-sticky-cat-bar">
-            <div class="sticky-cat-info" id="sticky-cat-info" title="Kategori aktif saat ini">
+          <!-- Sticky Active Category Indicator (Hidden from top) -->
+          <div class="jobdesk-sticky-cat-bar" id="jobdesk-sticky-cat-bar" style="display: none !important;">
+            <div class="sticky-cat-info" id="sticky-cat-info">
               <span class="sticky-cat-icon" id="jobdesk-sticky-cat-icon">🏪</span>
               <span class="sticky-cat-name" id="jobdesk-sticky-cat-name">Ricko's Media Player - Shopee</span>
             </div>
-            <div class="sticky-cat-actions">
-              <button type="button" class="btn btn-secondary btn-xs btn-change-cat-scroll" id="btn-quick-switch-cat" title="Klik untuk berganti kategori toko / akun">
-                <span>📂</span> Ganti Kategori ▾
-              </button>
-            </div>
+            <button type="button" id="btn-quick-switch-cat"></button>
           </div>
 
           <main class="app-main">
             <!-- Action Bar Minimalis Tambah Tugas -->
-            <div class="jobdesk-action-bar">
+            <div class="jobdesk-action-bar" style="display: none !important;">
               <div class="jobdesk-active-info">
                 <span class="active-cat-icon" id="jobdesk-active-cat-icon">🏪</span>
                 <div>
@@ -274,8 +255,8 @@
             <!-- Panel Daftar Jobdesk & Tugas -->
             <section class="panel list-panel">
               <div class="toolbar">
-                <!-- Filter Buttons (Hanya Semua, Harian & Umum sesuai permintaan) -->
-                <div class="filter-group">
+                <!-- Filter group (hidden per user request: "keterangan harian atau umum di bagian atas dihapus saja") -->
+                <div class="filter-group" style="display: none !important;">
                   <button type="button" class="btn-filter active" data-filter="all">Semua (<span id="c-all">0</span>)</button>
                   <button type="button" class="btn-filter" data-filter="daily">🔄 Harian (<span id="c-daily">0</span>)</button>
                   <button type="button" class="btn-filter" data-filter="general">📌 Umum (<span id="c-general">0</span>)</button>
@@ -284,19 +265,17 @@
                   <span id="c-completed" style="display:none;">0</span>
                 </div>
 
-                <!-- Search & Actions -->
-                <div class="toolbar-actions">
-                  <div class="search-box">
-                    <input type="text" id="input-search" placeholder="🔍 Cari tugas atau kategori...">
+                <!-- Search Box Saja di Atas -->
+                <div class="toolbar-actions" style="width: 100%;">
+                  <div class="search-box" style="flex: 1; width: 100%;">
+                    <input type="text" id="input-search" placeholder="🔍 Cari tugas di kategori ini...">
                   </div>
-                  <button type="button" id="btn-clear-completed" class="btn btn-secondary-danger btn-sm" title="Hapus tugas umum yang sudah selesai">
-                    Bersihkan yang selesai
-                  </button>
+                  <button type="button" id="btn-clear-completed" style="display: none;">Bersihkan</button>
                 </div>
               </div>
 
-              <!-- Task List Items -->
-              <div id="todo-items-list" class="todo-items-list">
+              <!-- Container Jobdesk Terpisah (Umum di atas, Harian di bawah) -->
+              <div id="todo-items-list" class="todo-items-split-container">
                 <!-- Dynamic rendering -->
               </div>
             </section>
@@ -793,25 +772,21 @@
       </div>
     </div>
 
-    <!-- MOBILE BOTTOM NAVIGATION (Tampil Khusus di Layar HP) -->
-    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
-      <button type="button" class="mobile-nav-btn active" data-page="vision" id="mob-nav-vision">
-        <span class="mob-icon">🌟</span>
-        <span class="mob-label">Impian</span>
-      </button>
-      <button type="button" class="mobile-nav-btn" data-page="jobdesk" id="mob-nav-jobdesk">
-        <span class="mob-icon">📋</span>
-        <span class="mob-label">Jobdesk</span>
-        <span class="mob-badge" id="mob-badge-todos">0</span>
-      </button>
-      <button type="button" class="mobile-nav-btn" data-page="calendar" id="mob-nav-calendar">
-        <span class="mob-icon">📅</span>
-        <span class="mob-label">Agenda</span>
-      </button>
-      <button type="button" class="mobile-nav-btn" id="mob-btn-categories">
-        <span class="mob-icon">📂</span>
-        <span class="mob-label">Kategori</span>
-      </button>
+    <!-- MOBILE & DESKTOP BOTTOM BAR (Pilihan Kategori Scroll ke Samping) -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Pilihan Kategori Toko &amp; Akun">
+      <div class="mobile-bottom-cat-wrapper">
+        <span class="mobile-cat-lead-icon" title="Pilihan Kategori Toko &amp; Akun">📂</span>
+        <div id="category-tabs" class="category-tabs mobile-category-scroll">
+          <!-- Rendered dynamically via app.js -->
+        </div>
+        <button type="button" class="btn-bottom-add-cat" id="btn-add-category" title="Tambah Kategori Toko / Akun Baru">
+          <span>＋</span>
+        </button>
+      </div>
+
+      <!-- Compatibility elements for existing JS references -->
+      <span id="mob-badge-todos" style="display:none;">0</span>
+      <button type="button" id="mob-btn-categories" style="display:none;"></button>
     </nav>
 
     <!-- Toast Notification Container -->

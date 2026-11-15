@@ -19,6 +19,7 @@
   let calYear = now.getFullYear();
   let calMonth = now.getMonth(); // 0 - 11
   let selectedDateStr = getTodayDateStr();
+  const openSubtaskIds = new Set();
 
   const DEFAULT_CATEGORIES = [
     { id: 'cat-ricko-shopee', name: "Ricko's Media Player - Shopee", icon: '🏪', color: '#ef8e06', group: 'Toko Bisnis' },
@@ -1174,7 +1175,13 @@
     if (tab && tab.dataset.cat) {
       selectedCategory = tab.dataset.cat;
       localStorage.setItem('todolist_selected_category', selectedCategory);
+      if (typeof activePage !== 'undefined' && activePage !== 'jobdesk' && typeof switchPage === 'function') {
+        switchPage('jobdesk');
+      }
       renderAll();
+      if (tab.scrollIntoView) {
+        tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
     }
   });
 
@@ -1677,137 +1684,193 @@
     }).join('');
   }
 
-  // Render Task List (Khusus Jobdesk Harian & Umum - Target hanya di bagian atas)
-  function renderTaskList() {
-    // Sisakan kategori harian & umum saja di bagian bawah
-    let filtered = getScopeTodos().filter(t => t.type !== 'target');
+  // Render Single Task Card Helper
+  function renderTaskCard(item) {
+    const isDone = Boolean(item.completed);
+    const priority = item.priority || 'medium';
+    const typeLabel = item.type === 'daily' ? '🔄 Harian' : '📌 Umum';
+    const streakHtml = item.type === 'daily' && item.streak > 0 
+      ? `<span class="streak-pill" title="${item.streak} hari berturut-turut selesai!">🔥 ${item.streak} hari</span>` 
+      : '';
 
-    // Filter by type (Harian atau Umum)
-    if (currentFilter === 'daily') filtered = filtered.filter(t => t.type === 'daily');
-    else if (currentFilter === 'general') filtered = filtered.filter(t => t.type === 'general');
+    // Subtasks calculation for general tasks (Default Tertutup / Collapsed Dropdown)
+    let subtasksHtml = '';
+    let progressBadgeHtml = '';
+    if (item.type === 'general') {
+      const subtasks = Array.isArray(item.subtasks) ? item.subtasks : [];
+      const totalSub = subtasks.length;
+      const doneSub = subtasks.filter(s => s.completed).length;
+      const pct = totalSub > 0 ? Math.round((doneSub / totalSub) * 100) : (item.completed ? 100 : 0);
+      const isOpen = openSubtaskIds.has(String(item.id));
 
-    // Search query
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
-      filtered = filtered.filter(t => 
-        (t.title && t.title.toLowerCase().includes(q)) ||
-        (t.category && t.category.toLowerCase().includes(q))
-      );
-    }
-
-    if (filtered.length === 0) {
-      todoItemsList.innerHTML = `
-        <div class="empty-state">
-          <div class="icon">📋</div>
-          <p>Belum ada pekerjaan harian atau umum di kategori ini.</p>
-        </div>
+      progressBadgeHtml = `
+        <span class="badge-progress ${pct === 100 ? 'done' : ''}">
+          ${totalSub > 0 ? `${doneSub}/${totalSub} (${pct}%)` : `${pct}%`}
+        </span>
       `;
-      return;
-    }
 
-    todoItemsList.innerHTML = filtered.map(item => {
-      const isDone = Boolean(item.completed);
-      const category = esc(item.category || 'Operasional & Markas');
-      const priority = item.priority || 'medium';
-      const typeLabel = item.type === 'daily' ? '🔄 Harian' : '📌 Umum';
-      const streakHtml = item.type === 'daily' && item.streak > 0 
-        ? `<span class="streak-pill" title="${item.streak} hari berturut-turut selesai!">🔥 ${item.streak} hari</span>` 
-        : '';
+      const subtaskListItems = subtasks.map(s => `
+        <div class="subtask-item">
+          <input 
+            type="checkbox" 
+            class="subtask-checkbox" 
+            ${s.completed ? 'checked' : ''} 
+            data-action="toggle-subtask" 
+            data-task-id="${item.id}" 
+            data-subtask-id="${s.id}"
+          >
+          <span class="subtask-title ${s.completed ? 'completed' : ''}">${esc(s.title)}</span>
+          <button 
+            type="button" 
+            class="btn-subtask-del" 
+            data-action="delete-subtask" 
+            data-task-id="${item.id}" 
+            data-subtask-id="${s.id}" 
+            title="Hapus sub-tugas"
+          >&times;</button>
+        </div>
+      `).join('');
 
-      // Subtasks calculation for general tasks
-      let subtasksHtml = '';
-      let progressBadgeHtml = '';
-      if (item.type === 'general') {
-        const subtasks = Array.isArray(item.subtasks) ? item.subtasks : [];
-        const totalSub = subtasks.length;
-        const doneSub = subtasks.filter(s => s.completed).length;
-        const pct = totalSub > 0 ? Math.round((doneSub / totalSub) * 100) : (item.completed ? 100 : 0);
-
-        progressBadgeHtml = `
-          <span class="badge-progress ${pct === 100 ? 'done' : ''}">
-            ${totalSub > 0 ? `${doneSub}/${totalSub} (${pct}%)` : `${pct}%`}
-          </span>
-        `;
-
-        const subtaskListItems = subtasks.map(s => `
-          <div class="subtask-item">
-            <input 
-              type="checkbox" 
-              class="subtask-checkbox" 
-              ${s.completed ? 'checked' : ''} 
-              data-action="toggle-subtask" 
-              data-task-id="${item.id}" 
-              data-subtask-id="${s.id}"
-            >
-            <span class="subtask-title ${s.completed ? 'completed' : ''}">${esc(s.title)}</span>
-            <button 
-              type="button" 
-              class="btn-subtask-del" 
-              data-action="delete-subtask" 
-              data-task-id="${item.id}" 
-              data-subtask-id="${s.id}" 
-              title="Hapus sub-tugas"
-            >&times;</button>
-          </div>
-        `).join('');
-
-        subtasksHtml = `
-          <div class="subtask-section">
-            <div class="subtask-header">
-              <span>Sub-jobdesk &amp; Progres:</span>
-              <span class="badge-progress ${pct === 100 ? 'done' : ''}">${pct}% Selesai</span>
-            </div>
+      subtasksHtml = `
+        <div class="subtask-section subtask-dropdown-container ${isOpen ? 'is-open' : 'is-closed'}">
+          <button 
+            type="button" 
+            class="subtask-dropdown-toggle" 
+            data-action="toggle-subtask-dropdown" 
+            data-task-id="${item.id}"
+            title="Klik untuk membuka / menutup sub-jobdesk"
+            aria-expanded="${isOpen}"
+          >
+            <span class="subtask-toggle-left">
+              <span class="subtask-toggle-arrow ${isOpen ? 'open' : ''}">${isOpen ? '▼' : '▶'}</span>
+              <span class="subtask-toggle-label">Sub-jobdesk ${totalSub > 0 ? `(${doneSub}/${totalSub})` : ''}</span>
+            </span>
+            <span class="badge-progress ${pct === 100 ? 'done' : ''}">${pct}% Selesai</span>
+          </button>
+          <div class="subtask-dropdown-body" style="${isOpen ? 'display: block;' : 'display: none;'}">
             ${totalSub > 0 ? `
               <div class="subtask-progress-bar">
                 <div class="subtask-progress-fill ${pct === 100 ? 'done' : ''}" style="width: ${pct}%;"></div>
               </div>
               <div class="subtask-list">${subtaskListItems}</div>
-            ` : ''}
+            ` : `
+              <div class="subtask-list subtask-empty-hint">Belum ada sub-jobdesk. Tambahkan rincian di bawah:</div>
+            `}
             <div class="subtask-add-row">
               <input type="text" class="input-subtask" placeholder="＋ Tambah sub-jobdesk..." data-task-id="${item.id}" maxlength="150">
               <button type="button" class="btn btn-secondary btn-xs btn-add-subtask" data-task-id="${item.id}">Tambah</button>
             </div>
           </div>
-        `;
-      }
-
-      const targetStatusHtml = item.type === 'target' 
-        ? `<span class="target-status-badge ${isDone ? 'achieved' : 'pending'}" style="margin-left: 4px;">${isDone ? '🏆 Tercapai' : '🎯 Sedang Dikejar'}</span>` 
-        : '';
-
-      return `
-        <div class="todo-item ${isDone ? 'completed' : ''}" data-id="${item.id}">
-          <div class="todo-card-top">
-            <div class="todo-card-title-row">
-              <input 
-                type="checkbox" 
-                class="todo-checkbox" 
-                ${isDone ? 'checked' : ''} 
-                data-id="${item.id}"
-                title="${isDone ? 'Tandai belum selesai' : 'Tandai sudah selesai'}"
-              >
-              <div class="todo-title">${esc(item.title)}</div>
-            </div>
-            <div class="todo-actions">
-              <button class="btn-icon-sm btn-edit-task" title="Edit Tugas" data-id="${item.id}">✏️</button>
-              <button class="btn-icon-sm danger btn-delete-task" title="Hapus Tugas" data-id="${item.id}">🗑️</button>
-            </div>
-          </div>
-          <div class="todo-card-body">
-            <div class="todo-meta">
-              <span class="badge-type ${item.type}">${typeLabel}</span>
-              <span class="badge-tag priority-${priority}">
-                ${priority === 'high' ? '🔥 Tinggi' : priority === 'medium' ? '⚡ Sedang' : '☕ Rendah'}
-              </span>
-              ${streakHtml}
-              ${progressBadgeHtml}
-              ${targetStatusHtml}
-            </div>
-            ${subtasksHtml}
-          </div>
         </div>
       `;
-    }).join('');
+    }
+
+    const targetStatusHtml = item.type === 'target' 
+      ? `<span class="target-status-badge ${isDone ? 'achieved' : 'pending'}" style="margin-left: 4px;">${isDone ? '🏆 Tercapai' : '🎯 Sedang Dikejar'}</span>` 
+      : '';
+
+    return `
+      <div class="todo-item ${isDone ? 'completed' : ''}" data-id="${item.id}">
+        <div class="todo-card-top">
+          <div class="todo-card-title-row">
+            <input 
+              type="checkbox" 
+              class="todo-checkbox" 
+              ${isDone ? 'checked' : ''} 
+              data-id="${item.id}"
+              title="${isDone ? 'Tandai belum selesai' : 'Tandai sudah selesai'}"
+            >
+            <div class="todo-title">${esc(item.title)}</div>
+          </div>
+          <div class="todo-actions">
+            <button class="btn-icon-sm btn-edit-task" title="Edit Tugas" data-id="${item.id}">✏️</button>
+            <button class="btn-icon-sm danger btn-delete-task" title="Hapus Tugas" data-id="${item.id}">🗑️</button>
+          </div>
+        </div>
+        <div class="todo-card-body">
+          <div class="todo-meta">
+            <span class="badge-type ${item.type}">${typeLabel}</span>
+            <span class="badge-tag priority-${priority}">
+              ${priority === 'high' ? '🔥 Tinggi' : priority === 'medium' ? '⚡ Sedang' : '☕ Rendah'}
+            </span>
+            ${streakHtml}
+            ${progressBadgeHtml}
+            ${targetStatusHtml}
+          </div>
+          ${subtasksHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  // Render Task List (Jobdesk Umum di Atas, Jobdesk Harian di Bawah)
+  function renderTaskList() {
+    let scopeTodos = getScopeTodos().filter(t => t.type !== 'target');
+
+    // Search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      scopeTodos = scopeTodos.filter(t => 
+        (t.title && t.title.toLowerCase().includes(q)) ||
+        (t.category && t.category.toLowerCase().includes(q))
+      );
+    }
+
+    const generalTodos = scopeTodos.filter(t => t.type === 'general');
+    const dailyTodos = scopeTodos.filter(t => t.type === 'daily');
+
+    let html = '';
+
+    // 1. BAGIAN ATAS: JOBDESK UMUM
+    const hasCompletedGeneral = generalTodos.some(t => t.completed);
+    html += `
+      <div class="jobdesk-split-section" id="section-general-jobdesk">
+        <div class="jobdesk-split-header">
+          <div class="split-header-left">
+            <span class="split-icon">📌</span>
+            <h3 class="split-title">Jobdesk Umum</h3>
+            <span class="split-count-badge">${generalTodos.length} Tugas</span>
+          </div>
+          ${hasCompletedGeneral ? `
+            <button type="button" class="btn-clear-completed-sub" id="btn-clear-completed-sub" title="Bersihkan tugas umum yang sudah selesai">
+              Bersihkan Selesai
+            </button>
+          ` : ''}
+        </div>
+        <div class="jobdesk-cards-container todo-items-grid">
+          ${generalTodos.length > 0 ? generalTodos.map(renderTaskCard).join('') : `
+            <div class="empty-split-state">
+              <span class="empty-icon">📌</span>
+              <p>Belum ada jobdesk umum di kategori ini.</p>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+
+    // 2. BAGIAN BAWAH: JOBDESK HARIAN
+    html += `
+      <div class="jobdesk-split-section" id="section-daily-jobdesk">
+        <div class="jobdesk-split-header split-daily-header">
+          <div class="split-header-left">
+            <span class="split-icon">🔄</span>
+            <h3 class="split-title">Jobdesk Harian</h3>
+            <span class="split-count-badge">${dailyTodos.length} Tugas</span>
+            <span class="split-hint">• Reset otomatis tiap hari</span>
+          </div>
+        </div>
+        <div class="jobdesk-cards-container todo-items-grid">
+          ${dailyTodos.length > 0 ? dailyTodos.map(renderTaskCard).join('') : `
+            <div class="empty-split-state">
+              <span class="empty-icon">🔄</span>
+              <p>Belum ada jobdesk harian di kategori ini.</p>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+
+    todoItemsList.innerHTML = html;
   }
 
   // =========================================================
@@ -2314,6 +2377,7 @@
       item.completed = item.subtasks.every(s => s.completed);
     }
 
+    openSubtaskIds.add(String(taskId));
     saveTodosData();
     renderTaskList();
   }
@@ -2328,6 +2392,7 @@
       if (item.subtasks.length > 0) {
         item.completed = item.subtasks.every(s => s.completed);
       }
+      openSubtaskIds.add(String(taskId));
       saveTodosData();
       renderAll();
     }
@@ -2341,12 +2406,41 @@
     if (item.subtasks.length > 0) {
       item.completed = item.subtasks.every(s => s.completed);
     }
+    openSubtaskIds.add(String(taskId));
     saveTodosData();
     renderAll();
   }
 
   // Global Click Actions (Checkboxes, Subtasks, Edit, Delete, Agenda)
   document.addEventListener('click', (e) => {
+    // Toggle Subtask Dropdown (Default Tertutup, Buka saat Diklik)
+    const toggleSubtaskBtn = e.target.closest('[data-action="toggle-subtask-dropdown"]');
+    if (toggleSubtaskBtn) {
+      const taskId = toggleSubtaskBtn.dataset.taskId;
+      if (openSubtaskIds.has(String(taskId))) {
+        openSubtaskIds.delete(String(taskId));
+      } else {
+        openSubtaskIds.add(String(taskId));
+      }
+      renderTaskList();
+      return;
+    }
+
+    // Bersihkan Jobdesk Umum yang Selesai
+    const clearCompGeneralBtn = e.target.closest('#btn-clear-completed-sub');
+    if (clearCompGeneralBtn) {
+      const scope = getScopeTodos().filter(t => t.type === 'general');
+      const completedTasks = scope.filter(t => t.completed);
+      if (completedTasks.length > 0 && confirm(`Bersihkan ${completedTasks.length} jobdesk umum yang sudah selesai?`)) {
+        const completedIds = new Set(completedTasks.map(t => t.id));
+        todos = todos.filter(t => !completedIds.has(t.id));
+        saveTodosData();
+        syncTodayHistory();
+        renderAll();
+      }
+      return;
+    }
+
     // Add Subtask button
     const addSubtaskBtn = e.target.closest('.btn-add-subtask');
     if (addSubtaskBtn) {
