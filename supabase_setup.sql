@@ -42,37 +42,43 @@ values
     "id": "cat-ricko-shopee",
     "name": "Ricko''s Media Player - Shopee",
     "icon": "🏪",
-    "color": "#ef8e06"
+    "color": "#ef8e06",
+    "group": "Toko Bisnis"
   },
   {
     "id": "cat-shopee-mp3",
     "name": "Toko Shopee MP3 Player",
     "icon": "🏪",
-    "color": "#f97316"
+    "color": "#f97316",
+    "group": "Toko Bisnis"
   },
   {
     "id": "cat-zyra-jewelry",
     "name": "Toko Zyra Jewelry",
     "icon": "💎",
-    "color": "#a855f7"
+    "color": "#a855f7",
+    "group": "Toko Bisnis"
   },
   {
     "id": "cat-affiliate-sepatu",
     "name": "Akun Affiliate @reviewsepatucowok",
     "icon": "👟",
-    "color": "#3b82f6"
+    "color": "#3b82f6",
+    "group": "Akun Affiliate & TikTok"
   },
   {
     "id": "cat-1794636465464",
     "name": "Affiliate x Meta Ads",
     "icon": "🏪",
-    "color": "#126920"
+    "color": "#126920",
+    "group": "Akun Affiliate & TikTok"
   },
   {
     "id": "cat-1794636685162",
     "name": "Utas Pilot Threads",
     "icon": "🏪",
-    "color": "#6366f1"
+    "color": "#6366f1",
+    "group": "Akun Affiliate & TikTok"
   }
 ]'::jsonb, now()),
   ('todos', '[

@@ -11,10 +11,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="To Do List">
-  <!-- Modern SaaS Typography: Plus Jakarta Sans & Inter -->
+  <!-- Modern SaaS Typography: Outfit, Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -184,9 +184,9 @@
         <!-- HALAMAN 2: JOBDESK & TUGAS (TO DO LIST)        -->
         <!-- ============================================== -->
         <section id="page-jobdesk" class="app-page" style="display: none;">
-          <!-- Quick Stats Bar -->
-          <div class="stats-bar">
-            <div class="stat-pill" id="stat-target" title="Jumlah target sasaran kerja">
+          <!-- Quick Stats Bar (Dihapus / Disembunyikan Sesuai Permintaan User) -->
+          <div class="stats-bar" style="display: none !important;">
+            <div class="stat-pill" id="stat-target" style="display: none !important;" title="Jumlah target sasaran kerja">
               <span class="icon">🎯</span> <span id="stat-target-num">0</span> Target
             </div>
             <div class="stat-pill" id="stat-daily" title="Jobdesk harian otomatis reset tiap hari">
@@ -195,7 +195,7 @@
             <div class="stat-pill" id="stat-general" title="Jobdesk umum sekali jalan">
               <span class="icon">📌</span> <span id="stat-general-num">0</span> Umum
             </div>
-            <div class="stat-pill pill-warning" id="stat-active" title="Tugas yang belum selesai">
+            <div class="stat-pill pill-warning" id="stat-active" style="display: none !important;" title="Tugas yang belum selesai">
               <span class="icon">⏳</span> <span id="stat-active-num">0</span> Belum Selesai
             </div>
             <div class="stat-pill pill-success" id="stat-done" title="Tugas yang sudah selesai">
@@ -203,13 +203,18 @@
             </div>
           </div>
 
-          <!-- Category Bar (Tab Kategori Toko & Akun) -->
-          <div class="category-section">
+          <!-- Category Bar (Tab Kategori Toko & Akun Berkelompok & Bisa Dilipat) -->
+          <div class="category-section" id="category-section">
             <div class="category-header">
-              <div class="category-label">
-                <span>📂</span> <strong>Kategori Toko &amp; Akun:</strong>
+              <div class="category-label" id="category-collapse-toggle" style="cursor: pointer;" title="Klik untuk melipat atau membuka daftar kategori">
+                <span class="cat-fold-arrow" id="cat-fold-arrow">▼</span>
+                <span>📂</span> <strong>Kategori Toko &amp; Akun</strong>
+                <span class="cat-active-pill" id="cat-active-pill" style="display: none;"></span>
               </div>
               <div class="category-header-actions">
+                <button type="button" class="btn btn-secondary btn-sm btn-fold-toggle" id="btn-toggle-fold-cat" title="Lipat / Buka Kategori">
+                  <span id="cat-fold-btn-icon">▲</span> <span id="cat-fold-btn-text">Lipat Kategori</span>
+                </button>
                 <button type="button" class="btn btn-secondary btn-sm" id="btn-manage-categories" title="Kelola dan hapus kategori">
                   ⚙️ Kelola Kategori
                 </button>
@@ -220,6 +225,19 @@
             </div>
             <div id="category-tabs" class="category-tabs">
               <!-- Rendered dynamically via app.js -->
+            </div>
+          </div>
+
+          <!-- Sticky Active Category Indicator (Tetap muncul / ikut saat di-scroll ke bawah) -->
+          <div class="jobdesk-sticky-cat-bar" id="jobdesk-sticky-cat-bar">
+            <div class="sticky-cat-info" id="sticky-cat-info" title="Kategori aktif saat ini">
+              <span class="sticky-cat-icon" id="jobdesk-sticky-cat-icon">🏪</span>
+              <span class="sticky-cat-name" id="jobdesk-sticky-cat-name">Ricko's Media Player - Shopee</span>
+            </div>
+            <div class="sticky-cat-actions">
+              <button type="button" class="btn btn-secondary btn-xs btn-change-cat-scroll" id="btn-quick-switch-cat" title="Klik untuk berganti kategori toko / akun">
+                <span>📂</span> Ganti Kategori ▾
+              </button>
             </div>
           </div>
 
@@ -501,16 +519,33 @@
           <div class="cat-quick-presets">
             <div class="preset-label">⚡ Rekomendasi Cepat (Klik untuk memilih langsung):</div>
             <div class="preset-chips-grid">
-              <button type="button" class="chip-preset" data-name="Ricko's Media Player - Shopee" data-icon="🏪" data-color="#ef8e06">🏪 Ricko's Media Player</button>
-              <button type="button" class="chip-preset" data-name="Toko Shopee MP3 Player" data-icon="🏪" data-color="#f97316">🏪 Shopee MP3</button>
-              <button type="button" class="chip-preset" data-name="Toko TikTok Shop Fashion" data-icon="📱" data-color="#ec4899">📱 TikTok Shop</button>
-              <button type="button" class="chip-preset" data-name="Toko Tokopedia Elektronik" data-icon="🛍️" data-color="#10b981">🛍️ Tokopedia</button>
-              <button type="button" class="chip-preset" data-name="Toko Zyra Jewelry" data-icon="💎" data-color="#a855f7">💎 Zyra Jewelry</button>
-              <button type="button" class="chip-preset" data-name="Akun Affiliate @reviewsepatucowok" data-icon="👟" data-color="#3b82f6">👟 Affiliate Sepatu</button>
-              <button type="button" class="chip-preset" data-name="Operasional & Markas" data-icon="🏢" data-color="#6366f1">🏢 Operasional</button>
-              <button type="button" class="chip-preset" data-name="Bisnis & Proyek Baru" data-icon="💼" data-color="#eab308">💼 Bisnis Baru</button>
-              <button type="button" class="chip-preset" data-name="Reseller & Gudang" data-icon="📦" data-color="#06b6d4">📦 Reseller</button>
+              <button type="button" class="chip-preset" data-name="Ricko's Media Player - Shopee" data-icon="🏪" data-color="#ef8e06" data-group="Toko Bisnis">🏪 Ricko's Media Player</button>
+              <button type="button" class="chip-preset" data-name="Toko Shopee MP3 Player" data-icon="🏪" data-color="#f97316" data-group="Toko Bisnis">🏪 Shopee MP3</button>
+              <button type="button" class="chip-preset" data-name="Toko TikTok Shop Fashion" data-icon="📱" data-color="#ec4899" data-group="Toko Bisnis">📱 TikTok Shop</button>
+              <button type="button" class="chip-preset" data-name="Toko Tokopedia Elektronik" data-icon="🛍️" data-color="#10b981" data-group="Toko Bisnis">🛍️ Tokopedia</button>
+              <button type="button" class="chip-preset" data-name="Toko Zyra Jewelry" data-icon="💎" data-color="#a855f7" data-group="Toko Bisnis">💎 Zyra Jewelry</button>
+              <button type="button" class="chip-preset" data-name="Akun Affiliate @reviewsepatucowok" data-icon="👟" data-color="#3b82f6" data-group="Akun Affiliate &amp; TikTok">👟 Affiliate Sepatu</button>
+              <button type="button" class="chip-preset" data-name="Operasional & Markas" data-icon="🏢" data-color="#6366f1" data-group="Operasional &amp; Markas">🏢 Operasional</button>
+              <button type="button" class="chip-preset" data-name="Bisnis & Proyek Baru" data-icon="💼" data-color="#eab308" data-group="Toko Bisnis">💼 Bisnis Baru</button>
+              <button type="button" class="chip-preset" data-name="Reseller & Gudang" data-icon="📦" data-color="#06b6d4" data-group="Toko Bisnis">📦 Reseller</button>
             </div>
+          </div>
+
+          <div class="form-group-full" style="margin-top: 10px;">
+            <label for="new-cat-group">Kelompok / Grup Kategori:</label>
+            <select id="new-cat-group" class="form-select" style="width: 100%; padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--panel-border); background: var(--panel-bg); color: var(--text-main);">
+              <option value="Toko Bisnis">🏪 Toko Bisnis</option>
+              <option value="Akun Affiliate &amp; TikTok">📱 Akun Affiliate &amp; TikTok / Sosmed</option>
+              <option value="Operasional &amp; Markas">🏢 Operasional &amp; Markas</option>
+              <option value="__custom__">✏️ Buat Kelompok Baru...</option>
+            </select>
+            <input 
+              type="text" 
+              id="new-cat-custom-group" 
+              placeholder="Tulis nama kelompok baru (misal: Toko Bisnis, Akun Affiliate TikTok)..." 
+              style="display: none; margin-top: 6px; width: 100%; padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--panel-border); background: var(--panel-bg); color: var(--text-main);"
+              maxlength="50"
+            >
           </div>
 
           <div class="form-options-row modal-row">

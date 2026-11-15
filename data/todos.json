@@ -1,69 +1,112 @@
 [
   {
+    "id": "todo-1794662182145-o27z",
+    "type": "general",
+    "title": "Buat 40 Akun Threads",
+    "category": "Utas Pilot Threads",
+    "priority": "medium",
+    "subtasks": [
+      {
+        "id": "st-1794662193417-100",
+        "title": "1 - 5 Akun",
+        "completed": true
+      },
+      {
+        "id": "st-1794662201693-nlp",
+        "title": "6 - 10 Akun",
+        "completed": true
+      },
+      {
+        "id": "st-1794662208423-4h7",
+        "title": "11 - 15 Aun",
+        "completed": false
+      },
+      {
+        "id": "st-1794662222804-dcu",
+        "title": "16 - 20 Aun",
+        "completed": false
+      },
+      {
+        "id": "st-1794662233549-qu2",
+        "title": "21 - 25 Akun",
+        "completed": false
+      }
+    ],
+    "completed": false,
+    "createdAt": 1794662182145
+  },
+  {
+    "id": "todo-1794662127401-ioje",
+    "type": "target",
+    "title": "Bisa Posting 300 - 400 Utas Setiap Hari",
+    "category": "Utas Pilot Threads",
+    "priority": "medium",
+    "completed": false,
+    "createdAt": 1794662127402
+  },
+  {
     "id": "todo-1794636654013-zwng",
+    "type": "target",
     "title": "Punya 50 Iklan Video Berjalan Dan Profit",
     "category": "Affiliate x Meta Ads",
-    "type": "target",
     "priority": "medium",
     "completed": false,
     "createdAt": 1794636654013
   },
   {
     "id": "todo-1794636567132-7udf",
+    "type": "general",
     "title": "Simpan 50 Video China Beserta Link nya",
     "category": "Affiliate x Meta Ads",
-    "type": "general",
     "priority": "medium",
+    "subtasks": [],
     "completed": false,
-    "createdAt": 1794636567132,
-    "subtasks": []
+    "createdAt": 1794636567132
   },
   {
     "id": "todo-1794636118306-vw0q",
+    "type": "daily",
     "title": "Buat 10 Video Per Hari , 1 Video Setiap Produk",
     "category": "Akun Affiliate @reviewsepatucowok",
-    "type": "daily",
     "priority": "medium",
+    "subtasks": [],
     "completed": false,
-    "createdAt": 1794636118306,
-    "subtasks": []
+    "createdAt": 1794636118306
   },
   {
     "id": "todo-1794636055146-05zn",
+    "type": "general",
     "title": "Buat 35 Video Pertama , Setiap Produk 7 Video",
     "category": "Akun Affiliate @reviewsepatucowok",
-    "type": "general",
     "priority": "medium",
+    "subtasks": [],
     "completed": false,
-    "createdAt": 1794636055146,
-    "subtasks": []
+    "createdAt": 1794636055146
   },
   {
     "id": "todo-1794635705238-isiv",
+    "type": "target",
     "title": "Posting 10 - 15 Video Per Hari",
     "category": "Akun Affiliate @reviewsepatucowok",
-    "type": "target",
     "priority": "high",
     "completed": false,
     "createdAt": 1794635705238
   },
   {
     "id": "todo-1794635668825-jwlx",
+    "type": "target",
     "title": "Bisa Dapet Komisi 100rb Setiap Hari",
     "category": "Akun Affiliate @reviewsepatucowok",
-    "type": "target",
     "priority": "low",
     "completed": false,
     "createdAt": 1794635668825
   },
   {
     "id": "todo-1794634733642-wj0o",
+    "type": "general",
     "title": "Buat Akun Sosmed MP3 Player",
     "category": "Ricko's Media Player - Shopee",
-    "type": "general",
     "priority": "medium",
-    "completed": false,
-    "createdAt": 1794634733642,
     "subtasks": [
       {
         "id": "st-1794634743131-t6o",
@@ -80,12 +123,14 @@
         "title": "Threads",
         "completed": false
       }
-    ]
+    ],
+    "completed": false,
+    "createdAt": 1794634733642
   },
   {
     "id": "todo-target-1",
-    "title": "Bisa Rutin Posting 10 Video Per Hari",
     "type": "target",
+    "title": "Bisa Rutin Posting 10 Video Per Hari",
     "category": "Ricko's Media Player - Shopee",
     "priority": "medium",
     "completed": false,
@@ -93,14 +138,11 @@
   },
   {
     "id": "todo-daily-1",
-    "title": "Edit Semua Produk MP3 Player",
     "type": "general",
+    "title": "Edit Semua Produk MP3 Player",
+    "streak": 2,
     "category": "Ricko's Media Player - Shopee",
     "priority": "high",
-    "completed": false,
-    "streak": 2,
-    "lastCompletedDate": null,
-    "createdAt": 1731540000000,
     "subtasks": [
       {
         "id": "st-1794625522956-w2w",
@@ -122,51 +164,40 @@
         "title": "Upload Video Tutorial Setiap Produk",
         "completed": false
       }
-    ]
+    ],
+    "completed": false,
+    "createdAt": 1731540000000,
+    "lastCompletedDate": null
   },
   {
     "id": "todo-daily-2",
-    "title": "Upload 5 Video Setiap Hari di Shopee Video",
     "type": "daily",
+    "title": "Upload 5 Video Setiap Hari di Shopee Video",
+    "streak": 1,
     "category": "Ricko's Media Player - Shopee",
     "priority": "medium",
     "completed": false,
-    "streak": 1,
-    "lastCompletedDate": null,
-    "createdAt": 1731540000000
-  },
-  {
-    "id": "todo-shopee-daily",
-    "title": "Cek laporan pesanan toko dan transaksi hari ini",
-    "type": "daily",
-    "category": "Toko Shopee MP3 Player",
-    "priority": "medium",
-    "completed": false,
-    "streak": 1,
-    "lastCompletedDate": null,
-    "createdAt": 1731540000000
+    "createdAt": 1731540000000,
+    "lastCompletedDate": null
   },
   {
     "id": "todo-daily-zyra",
-    "title": "Update stok katalog cincin & balas chat customer",
     "type": "daily",
+    "title": "Update stok katalog cincin & balas chat customer",
+    "streak": 1,
     "category": "Toko Zyra Jewelry",
     "priority": "medium",
     "completed": false,
-    "streak": 1,
-    "lastCompletedDate": null,
-    "createdAt": 1731540000000
+    "createdAt": 1731540000000,
+    "lastCompletedDate": null
   },
   {
     "id": "todo-daily-affiliate",
-    "title": "Tambah 10 Produk Di Showcase",
     "type": "general",
+    "title": "Tambah 10 Produk Di Showcase",
+    "streak": 1,
     "category": "Akun Affiliate @reviewsepatucowok",
     "priority": "high",
-    "completed": false,
-    "streak": 1,
-    "lastCompletedDate": null,
-    "createdAt": 1731540000000,
     "subtasks": [
       {
         "id": "st-1794635809771-gk1",
@@ -178,6 +209,9 @@
         "title": "5 Produk Berdasarkan Riset",
         "completed": true
       }
-    ]
+    ],
+    "completed": false,
+    "createdAt": 1731540000000,
+    "lastCompletedDate": null
   }
 ]

@@ -4,30 +4,30 @@
     "tasks": [
       {
         "id": "todo-daily-1",
-        "title": "Posting 3 video konten media sosial harian",
-        "type": "daily",
-        "category": "Akun Affiliate @reviewsepatucowok",
         "pic": "Kael",
+        "type": "daily",
+        "title": "Posting 3 video konten media sosial harian",
+        "category": "Akun Affiliate @reviewsepatucowok",
         "priority": "high",
         "completed": true,
         "completedAt": 1731320000000
       },
       {
         "id": "todo-daily-2",
-        "title": "Cek laporan pesanan toko dan transaksi hari ini",
-        "type": "daily",
-        "category": "Toko Shopee MP3 Player",
         "pic": "Naila",
+        "type": "daily",
+        "title": "Cek laporan pesanan toko dan transaksi hari ini",
+        "category": "Toko Shopee MP3 Player",
         "priority": "medium",
         "completed": true,
         "completedAt": 1731330000000
       },
       {
         "id": "todo-daily-3",
-        "title": "Evaluasi progres kerja harian & briefing tim",
-        "type": "daily",
-        "category": "Operasional & Markas",
         "pic": "Bos Ricko",
+        "type": "daily",
+        "title": "Evaluasi progres kerja harian & briefing tim",
+        "category": "Operasional & Markas",
         "priority": "medium",
         "completed": false,
         "completedAt": null
@@ -39,40 +39,40 @@
     "tasks": [
       {
         "id": "todo-daily-1",
-        "title": "Posting 3 video konten media sosial harian",
-        "type": "daily",
-        "category": "Akun Affiliate @reviewsepatucowok",
         "pic": "Kael",
+        "type": "daily",
+        "title": "Posting 3 video konten media sosial harian",
+        "category": "Akun Affiliate @reviewsepatucowok",
         "priority": "high",
         "completed": true,
         "completedAt": 1731410000000
       },
       {
         "id": "todo-daily-2",
-        "title": "Cek laporan pesanan toko dan transaksi hari ini",
-        "type": "daily",
-        "category": "Toko Shopee MP3 Player",
         "pic": "Naila",
+        "type": "daily",
+        "title": "Cek laporan pesanan toko dan transaksi hari ini",
+        "category": "Toko Shopee MP3 Player",
         "priority": "medium",
         "completed": false,
         "completedAt": null
       },
       {
         "id": "todo-daily-zyra",
-        "title": "Update stok katalog cincin & balas chat customer",
-        "type": "daily",
-        "category": "Toko Zyra Jewelry",
         "pic": "Naila",
+        "type": "daily",
+        "title": "Update stok katalog cincin & balas chat customer",
+        "category": "Toko Zyra Jewelry",
         "priority": "medium",
         "completed": false,
         "completedAt": null
       },
       {
         "id": "todo-daily-3",
-        "title": "Evaluasi progres kerja harian & briefing tim",
-        "type": "daily",
-        "category": "Operasional & Markas",
         "pic": "Bos Ricko",
+        "type": "daily",
+        "title": "Evaluasi progres kerja harian & briefing tim",
+        "category": "Operasional & Markas",
         "priority": "medium",
         "completed": false,
         "completedAt": null
@@ -81,10 +81,88 @@
   },
   "2026-11-13": {
     "date": "2026-11-13",
-    "tasks": []
+    "tasks": [
+      {
+        "id": "todo-1794636118306-vw0q",
+        "type": "daily",
+        "title": "Buat 10 Video Per Hari , 1 Video Setiap Produk",
+        "category": "Akun Affiliate @reviewsepatucowok",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      },
+      {
+        "id": "todo-daily-2",
+        "type": "daily",
+        "title": "Upload 5 Video Setiap Hari di Shopee Video",
+        "category": "Ricko's Media Player - Shopee",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      },
+      {
+        "id": "todo-shopee-daily",
+        "type": "daily",
+        "title": "Cek laporan pesanan toko dan transaksi hari ini",
+        "category": "Toko Shopee MP3 Player",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      },
+      {
+        "id": "todo-daily-zyra",
+        "type": "daily",
+        "title": "Update stok katalog cincin & balas chat customer",
+        "category": "Toko Zyra Jewelry",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      }
+    ]
   },
   "2026-11-14": {
     "date": "2026-11-14",
+    "tasks": [
+      {
+        "id": "todo-1794636118306-vw0q",
+        "type": "daily",
+        "title": "Buat 10 Video Per Hari , 1 Video Setiap Produk",
+        "category": "Akun Affiliate @reviewsepatucowok",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      },
+      {
+        "id": "todo-daily-2",
+        "type": "daily",
+        "title": "Upload 5 Video Setiap Hari di Shopee Video",
+        "category": "Ricko's Media Player - Shopee",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      },
+      {
+        "id": "todo-shopee-daily",
+        "type": "daily",
+        "title": "Cek laporan pesanan toko dan transaksi hari ini",
+        "category": "Toko Shopee MP3 Player",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      },
+      {
+        "id": "todo-daily-zyra",
+        "type": "daily",
+        "title": "Update stok katalog cincin & balas chat customer",
+        "category": "Toko Zyra Jewelry",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      }
+    ]
+  },
+  "2026-11-15": {
+    "date": "2026-11-15",
     "tasks": [
       {
         "id": "todo-1794636118306-vw0q",
@@ -100,15 +178,6 @@
         "title": "Upload 5 Video Setiap Hari di Shopee Video",
         "type": "daily",
         "category": "Ricko's Media Player - Shopee",
-        "priority": "medium",
-        "completed": false,
-        "completedAt": null
-      },
-      {
-        "id": "todo-shopee-daily",
-        "title": "Cek laporan pesanan toko dan transaksi hari ini",
-        "type": "daily",
-        "category": "Toko Shopee MP3 Player",
         "priority": "medium",
         "completed": false,
         "completedAt": null

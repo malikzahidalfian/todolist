@@ -21,11 +21,11 @@
   let selectedDateStr = getTodayDateStr();
 
   const DEFAULT_CATEGORIES = [
-    { id: 'cat-ricko-shopee', name: "Ricko's Media Player - Shopee", icon: '🏪', color: '#ef8e06' },
-    { id: 'cat-shopee-mp3', name: 'Toko Shopee MP3 Player', icon: '🏪', color: '#f97316' },
-    { id: 'cat-zyra-jewelry', name: 'Toko Zyra Jewelry', icon: '💎', color: '#ec4899' },
-    { id: 'cat-affiliate-sepatu', name: 'Akun Affiliate @reviewsepatucowok', icon: '👟', color: '#3b82f6' },
-    { id: 'cat-umum', name: 'Operasional & Markas', icon: '🏢', color: '#6366f1' }
+    { id: 'cat-ricko-shopee', name: "Ricko's Media Player - Shopee", icon: '🏪', color: '#ef8e06', group: 'Toko Bisnis' },
+    { id: 'cat-shopee-mp3', name: 'Toko Shopee MP3 Player', icon: '🏪', color: '#f97316', group: 'Toko Bisnis' },
+    { id: 'cat-zyra-jewelry', name: 'Toko Zyra Jewelry', icon: '💎', color: '#ec4899', group: 'Toko Bisnis' },
+    { id: 'cat-affiliate-sepatu', name: 'Akun Affiliate @reviewsepatucowok', icon: '👟', color: '#3b82f6', group: 'Akun Affiliate & TikTok' },
+    { id: 'cat-umum', name: 'Operasional & Markas', icon: '🏢', color: '#6366f1', group: 'Operasional & Markas' }
   ];
 
   const DEFAULT_GOALS = [
@@ -847,8 +847,51 @@
   }
 
   // =========================================================
-  // CATEGORIES ENGINE
+  // CATEGORIES ENGINE (GROUPED & COLLAPSIBLE)
   // =========================================================
+
+  function getCategoryGroup(cat) {
+    if (cat.group && cat.group.trim()) return cat.group.trim();
+    const n = (cat.name || '').toLowerCase();
+    if (n.includes('affiliate') || n.includes('tiktok') || n.includes('threads') || n.includes('meta') || n.includes('sosmed') || n.includes('review') || n.includes('sepatu') || n.includes('instagram') || n.includes('fb') || n.includes('youtube')) {
+      return 'Akun Affiliate & TikTok';
+    }
+    if (n.includes('toko') || n.includes('shopee') || n.includes('shop') || n.includes('store') || n.includes('jewelry') || n.includes('bisnis') || n.includes('mp3') || n.includes('media player') || n.includes('tokopedia')) {
+      return 'Toko Bisnis';
+    }
+    return 'Operasional & Markas';
+  }
+
+  let isCategoryFolded = localStorage.getItem('todolist_cat_folded') === '1';
+
+  function applyCategoryFoldState() {
+    const section = document.getElementById('category-section');
+    const btnIcon = document.getElementById('cat-fold-btn-icon');
+    const btnText = document.getElementById('cat-fold-btn-text');
+    const foldArrow = document.getElementById('cat-fold-arrow');
+    const activePill = document.getElementById('cat-active-pill');
+
+    if (!section) return;
+    if (isCategoryFolded) {
+      section.classList.add('is-folded');
+      if (btnIcon) btnIcon.textContent = '▼';
+      if (btnText) btnText.textContent = 'Buka Kategori';
+      if (foldArrow) foldArrow.textContent = '▶';
+      if (activePill) activePill.style.display = 'inline-flex';
+    } else {
+      section.classList.remove('is-folded');
+      if (btnIcon) btnIcon.textContent = '▲';
+      if (btnText) btnText.textContent = 'Lipat Kategori';
+      if (foldArrow) foldArrow.textContent = '▼';
+      if (activePill) activePill.style.display = 'none';
+    }
+  }
+
+  function toggleCategoryFold() {
+    isCategoryFolded = !isCategoryFolded;
+    localStorage.setItem('todolist_cat_folded', isCategoryFolded ? '1' : '0');
+    applyCategoryFoldState();
+  }
 
   function renderCategoryTabs() {
     // If selectedCategory is invalid, select the first available category
@@ -856,23 +899,67 @@
       selectedCategory = categories[0] ? categories[0].name : '';
     }
 
-    let tabsHtml = '';
+    // Group categories
+    const groupsMap = {};
     categories.forEach(cat => {
-      const count = todos.filter(t => t.category === cat.name).length;
-      const isSelected = selectedCategory === cat.name;
-      const canDelete = categories.length > 1;
+      const grp = getCategoryGroup(cat);
+      if (!groupsMap[grp]) groupsMap[grp] = [];
+      groupsMap[grp].push(cat);
+    });
 
-      tabsHtml += `
-        <div class="cat-tab ${isSelected ? 'active' : ''}" data-cat="${esc(cat.name)}" title="Lihat tugas ${esc(cat.name)}">
-          <span>${esc(cat.icon || '📁')}</span>
-          <span>${esc(cat.name)}</span>
-          <span class="cat-tab-badge">${count}</span>
-          ${canDelete ? `<button type="button" class="btn-del-cat" data-del-cat="${esc(cat.id)}" title="Hapus kategori ${esc(cat.name)}">&times;</button>` : ''}
+    const orderedGroupNames = Object.keys(groupsMap).sort((a, b) => {
+      const order = { 'Toko Bisnis': 1, 'Akun Affiliate & TikTok': 2, 'Operasional & Markas': 3 };
+      const oa = order[a] || 99;
+      const ob = order[b] || 99;
+      return oa - ob;
+    });
+
+    let groupsHtml = '<div class="cat-groups-wrapper">';
+    orderedGroupNames.forEach(grpName => {
+      const groupCats = groupsMap[grpName];
+      const grpIcon = grpName.includes('Toko') ? '🏪' : (grpName.includes('Affiliate') || grpName.includes('TikTok')) ? '📱' : grpName.includes('Operasional') ? '🏢' : '📂';
+
+      let tabsHtml = '';
+      groupCats.forEach(cat => {
+        const count = todos.filter(t => t.category === cat.name).length;
+        const isSelected = selectedCategory === cat.name;
+        const canDelete = categories.length > 1;
+
+        tabsHtml += `
+          <div class="cat-tab ${isSelected ? 'active' : ''}" data-cat="${esc(cat.name)}" title="Lihat tugas ${esc(cat.name)}">
+            <span>${esc(cat.icon || '📁')}</span>
+            <span>${esc(cat.name)}</span>
+            <span class="cat-tab-badge">${count}</span>
+            ${canDelete ? `<button type="button" class="btn-del-cat" data-del-cat="${esc(cat.id)}" title="Hapus kategori ${esc(cat.name)}">&times;</button>` : ''}
+          </div>
+        `;
+      });
+
+      groupsHtml += `
+        <div class="cat-group-card">
+          <div class="cat-group-header">
+            <span class="cat-group-icon">${grpIcon}</span>
+            <span class="cat-group-title">${esc(grpName)}</span>
+            <span class="cat-group-count">${groupCats.length}</span>
+          </div>
+          <div class="cat-group-tabs">
+            ${tabsHtml}
+          </div>
         </div>
       `;
     });
+    groupsHtml += '</div>';
 
-    categoryTabs.innerHTML = tabsHtml;
+    categoryTabs.innerHTML = groupsHtml;
+
+    // Update active category pill for collapsed state
+    const currentCat = categories.find(c => c.name === selectedCategory) || categories[0];
+    const catActivePill = document.getElementById('cat-active-pill');
+    if (catActivePill && currentCat) {
+      catActivePill.innerHTML = `<span>${esc(currentCat.icon || '📁')}</span> <span>Aktif: <strong>${esc(currentCat.name)}</strong></span>`;
+    }
+
+    applyCategoryFoldState();
 
     // Update active category info on the Jobdesk page banner
     updateJobdeskActiveCategoryBanner();
@@ -898,6 +985,20 @@
     if (iconEl) iconEl.textContent = currentCat.icon || '📁';
     if (nameEl) nameEl.textContent = currentCat.name;
     if (descEl) descEl.textContent = `${countActive} tugas aktif (${countTotal} total terdata)`;
+
+    // Update sticky active category bar on jobdesk page
+    const stickyIcon = document.getElementById('jobdesk-sticky-cat-icon');
+    const stickyName = document.getElementById('jobdesk-sticky-cat-name');
+    if (stickyIcon) stickyIcon.textContent = currentCat.icon || '🏪';
+    if (stickyName) stickyName.textContent = currentCat.name;
+
+    // Update sticky top navbar title on jobdesk page
+    if (activePage === 'jobdesk') {
+      const topIcon = document.getElementById('top-page-icon');
+      const topTitle = document.getElementById('top-page-title');
+      if (topIcon) topIcon.textContent = currentCat.icon || '🏪';
+      if (topTitle) topTitle.textContent = currentCat.name;
+    }
   }
 
   function renderSidebarCategories() {
@@ -906,15 +1007,35 @@
   }
 
   function updateCategorySelectOptions() {
-    const optionsHtml = categories.map(cat => {
-      const isSelected = (selectedCategory !== 'all' && selectedCategory === cat.name);
-      return `<option value="${esc(cat.name)}" ${isSelected ? 'selected' : ''}>${esc(cat.icon || '📁')} ${esc(cat.name)}</option>`;
-    }).join('') + `<option value="__add_new__">＋ Tambah Kategori Baru...</option>`;
+    const groupsMap = {};
+    categories.forEach(cat => {
+      const grp = getCategoryGroup(cat);
+      if (!groupsMap[grp]) groupsMap[grp] = [];
+      groupsMap[grp].push(cat);
+    });
 
-    selectCategory.innerHTML = optionsHtml;
-    editCategory.innerHTML = categories.map(cat => `<option value="${esc(cat.name)}">${esc(cat.icon || '📁')} ${esc(cat.name)}</option>`).join('');
+    const orderedGroupNames = Object.keys(groupsMap).sort((a, b) => {
+      const order = { 'Toko Bisnis': 1, 'Akun Affiliate & TikTok': 2, 'Operasional & Markas': 3 };
+      const oa = order[a] || 99;
+      const ob = order[b] || 99;
+      return oa - ob;
+    });
+
+    let groupedOptionsHtml = '';
+    orderedGroupNames.forEach(grpName => {
+      const grpIcon = grpName.includes('Toko') ? '🏪' : (grpName.includes('Affiliate') || grpName.includes('TikTok')) ? '📱' : '🏢';
+      groupedOptionsHtml += `<optgroup label="${grpIcon} ${esc(grpName)}">`;
+      groupsMap[grpName].forEach(cat => {
+        const isSelected = (selectedCategory !== 'all' && selectedCategory === cat.name);
+        groupedOptionsHtml += `<option value="${esc(cat.name)}" ${isSelected ? 'selected' : ''}>${esc(cat.icon || '📁')} ${esc(cat.name)}</option>`;
+      });
+      groupedOptionsHtml += `</optgroup>`;
+    });
+
+    selectCategory.innerHTML = groupedOptionsHtml + `<option value="__add_new__">＋ Tambah Kategori Baru...</option>`;
+    editCategory.innerHTML = groupedOptionsHtml;
     if (agendaCategory) {
-      agendaCategory.innerHTML = categories.map(cat => `<option value="${esc(cat.name)}">${esc(cat.icon || '📁')} ${esc(cat.name)}</option>`).join('');
+      agendaCategory.innerHTML = groupedOptionsHtml;
     }
   }
 
@@ -959,7 +1080,10 @@
           <div class="manage-cat-info">
             <span class="manage-cat-icon">${esc(cat.icon || '📁')}</span>
             <div>
-              <div class="manage-cat-name">${esc(cat.name)}</div>
+              <div class="manage-cat-name" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span>${esc(cat.name)}</span>
+                <span class="badge-tag" style="font-size: 0.68rem; padding: 1px 7px;">${esc(getCategoryGroup(cat))}</span>
+              </div>
               <div class="manage-cat-count">${count} tugas/target terdata</div>
             </div>
           </div>
@@ -1054,11 +1178,64 @@
     }
   });
 
+  // Category Fold Toggle Listeners
+  const btnToggleFoldCat = document.getElementById('btn-toggle-fold-cat');
+  if (btnToggleFoldCat) {
+    btnToggleFoldCat.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleCategoryFold();
+    });
+  }
+  const catCollapseToggle = document.getElementById('category-collapse-toggle');
+  if (catCollapseToggle) {
+    catCollapseToggle.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      toggleCategoryFold();
+    });
+  }
+
+  // Quick Switch Category Button Listener
+  const btnQuickSwitchCat = document.getElementById('btn-quick-switch-cat');
+  if (btnQuickSwitchCat) {
+    btnQuickSwitchCat.addEventListener('click', (e) => {
+      e.preventDefault();
+      const catSection = document.getElementById('category-section');
+      if (catSection) {
+        catSection.classList.remove('is-folded');
+        const foldBtnText = document.getElementById('cat-fold-btn-text');
+        const foldBtnIcon = document.getElementById('cat-fold-btn-icon');
+        if (foldBtnText) foldBtnText.textContent = 'Lipat Kategori';
+        if (foldBtnIcon) foldBtnIcon.textContent = '▲';
+        catSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+
   // Modal Tambah Kategori
+  const newCatGroup = document.getElementById('new-cat-group');
+  const newCatCustomGroup = document.getElementById('new-cat-custom-group');
+  if (newCatGroup) {
+    newCatGroup.addEventListener('change', () => {
+      if (newCatCustomGroup) {
+        if (newCatGroup.value === '__custom__') {
+          newCatCustomGroup.style.display = 'block';
+          newCatCustomGroup.focus();
+        } else {
+          newCatCustomGroup.style.display = 'none';
+        }
+      }
+    });
+  }
+
   btnAddCategory.addEventListener('click', () => {
     newCatName.value = '';
     newCatIcon.value = '🏪';
     newCatColor.value = '#6366f1';
+    if (newCatGroup) newCatGroup.value = 'Toko Bisnis';
+    if (newCatCustomGroup) {
+      newCatCustomGroup.value = '';
+      newCatCustomGroup.style.display = 'none';
+    }
     if (catModalError) {
       catModalError.style.display = 'none';
       catModalError.textContent = '';
@@ -1076,6 +1253,10 @@
       newCatName.value = chip.dataset.name || '';
       newCatIcon.value = chip.dataset.icon || '🏪';
       newCatColor.value = chip.dataset.color || '#6366f1';
+      if (newCatGroup && chip.dataset.group) {
+        newCatGroup.value = chip.dataset.group;
+        if (newCatCustomGroup) newCatCustomGroup.style.display = 'none';
+      }
       if (catModalError) {
         catModalError.style.display = 'none';
         catModalError.textContent = '';
@@ -1125,11 +1306,21 @@
       return;
     }
 
+    let finalGroup = 'Toko Bisnis';
+    if (newCatGroup) {
+      if (newCatGroup.value === '__custom__' && newCatCustomGroup && newCatCustomGroup.value.trim()) {
+        finalGroup = newCatCustomGroup.value.trim();
+      } else if (newCatGroup.value && newCatGroup.value !== '__custom__') {
+        finalGroup = newCatGroup.value;
+      }
+    }
+
     const newCat = {
       id: 'cat-' + Date.now(),
       name: nameVal,
       icon: newCatIcon.value.trim() || '📁',
-      color: newCatColor.value || '#6366f1'
+      color: newCatColor.value || '#6366f1',
+      group: finalGroup
     };
 
     categories.push(newCat);
@@ -1146,7 +1337,7 @@
       selectCategory.value = newCat.name;
     }
 
-    showToast(`✅ Kategori "${newCat.name}" berhasil dibuat!`, 'toast-success');
+    showToast(`✅ Kategori "${newCat.name}" berhasil dibuat dalam kelompok "${finalGroup}"!`, 'toast-success');
   });
 
   selectCategory.addEventListener('change', () => {
@@ -1465,8 +1656,7 @@
         <div class="target-card hope-card ${isDone ? 'completed' : ''}" data-id="${item.id}">
           <div class="target-card-header">
             <div>
-              <span class="badge-tag category">🏷️ ${category}</span>
-              <div class="target-card-title" style="margin-top: 4px;">${esc(item.title)}</div>
+              <div class="target-card-title">${esc(item.title)}</div>
             </div>
             <div class="card-action-btns">
               <button class="btn-icon-sm btn-edit-target" title="Edit Target Harapan" data-id="${item.id}">✏️</button>
@@ -1587,18 +1777,25 @@
 
       return `
         <div class="todo-item ${isDone ? 'completed' : ''}" data-id="${item.id}">
-          <input 
-            type="checkbox" 
-            class="todo-checkbox" 
-            ${isDone ? 'checked' : ''} 
-            data-id="${item.id}"
-            title="${isDone ? 'Tandai belum selesai' : 'Tandai sudah selesai'}"
-          >
-          <div class="todo-content">
-            <div class="todo-title">${esc(item.title)}</div>
+          <div class="todo-card-top">
+            <div class="todo-card-title-row">
+              <input 
+                type="checkbox" 
+                class="todo-checkbox" 
+                ${isDone ? 'checked' : ''} 
+                data-id="${item.id}"
+                title="${isDone ? 'Tandai belum selesai' : 'Tandai sudah selesai'}"
+              >
+              <div class="todo-title">${esc(item.title)}</div>
+            </div>
+            <div class="todo-actions">
+              <button class="btn-icon-sm btn-edit-task" title="Edit Tugas" data-id="${item.id}">✏️</button>
+              <button class="btn-icon-sm danger btn-delete-task" title="Hapus Tugas" data-id="${item.id}">🗑️</button>
+            </div>
+          </div>
+          <div class="todo-card-body">
             <div class="todo-meta">
               <span class="badge-type ${item.type}">${typeLabel}</span>
-              <span class="badge-tag category">🏷️ ${category}</span>
               <span class="badge-tag priority-${priority}">
                 ${priority === 'high' ? '🔥 Tinggi' : priority === 'medium' ? '⚡ Sedang' : '☕ Rendah'}
               </span>
@@ -1607,10 +1804,6 @@
               ${targetStatusHtml}
             </div>
             ${subtasksHtml}
-          </div>
-          <div class="todo-actions">
-            <button class="btn-icon-sm btn-edit-task" title="Edit Tugas" data-id="${item.id}">✏️</button>
-            <button class="btn-icon-sm danger btn-delete-task" title="Hapus Tugas" data-id="${item.id}">🗑️</button>
           </div>
         </div>
       `;
@@ -2468,9 +2661,12 @@
         if (btn) btn.addEventListener('click', () => btnAddGoal.click());
       }
     } else if (page === 'jobdesk') {
-      if (topIcon) topIcon.textContent = '📋';
-      if (topTitle) topTitle.textContent = 'Jobdesk & Target Kerja';
-      if (topSubtitle) topSubtitle.textContent = 'Target Sasaran, Jobdesk Harian & Umum per Kategori Toko & Akun.';
+      const currentCat = categories.find(c => c.name === selectedCategory) || categories[0];
+      const catIcon = (currentCat && currentCat.icon) ? currentCat.icon : '🏪';
+      const catName = (currentCat && currentCat.name) ? currentCat.name : 'Jobdesk & Target Kerja';
+      if (topIcon) topIcon.textContent = catIcon;
+      if (topTitle) topTitle.textContent = catName;
+      if (topSubtitle) topSubtitle.textContent = 'Daftar pekerjaan & target kategori ' + catName;
       if (contextActions) {
         contextActions.innerHTML = `
           <button type="button" class="btn btn-primary btn-sm" id="btn-top-add-task">
