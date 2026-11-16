@@ -953,6 +953,30 @@
 
     categoryTabs.innerHTML = groupsHtml;
 
+    // Render Mobile Bottom Category Tabs (Khusus HP)
+    const mobileCategoryTabs = document.getElementById('mobile-category-tabs');
+    if (mobileCategoryTabs) {
+      let mobTabsHtml = '';
+      orderedGroupNames.forEach(grpName => {
+        const groupCats = groupsMap[grpName];
+        groupCats.forEach(cat => {
+          const count = todos.filter(t => t.category === cat.name).length;
+          const isSelected = selectedCategory === cat.name;
+          const canDelete = categories.length > 1;
+
+          mobTabsHtml += `
+            <div class="cat-tab ${isSelected ? 'active' : ''}" data-cat="${esc(cat.name)}" title="Lihat tugas ${esc(cat.name)}">
+              <span>${esc(cat.icon || '📁')}</span>
+              <span>${esc(cat.name)}</span>
+              <span class="cat-tab-badge">${count}</span>
+              ${canDelete ? `<button type="button" class="btn-del-cat" data-del-cat="${esc(cat.id)}" title="Hapus kategori ${esc(cat.name)}">&times;</button>` : ''}
+            </div>
+          `;
+        });
+      });
+      mobileCategoryTabs.innerHTML = mobTabsHtml;
+    }
+
     // Update active category pill for collapsed state
     const currentCat = categories.find(c => c.name === selectedCategory) || categories[0];
     const catActivePill = document.getElementById('cat-active-pill');
@@ -1160,7 +1184,7 @@
   }
 
   // Category Tabs Click Delegation
-  categoryTabs.addEventListener('click', (e) => {
+  function handleCategoryTabClick(e) {
     // Handle Delete Category
     const delBtn = e.target.closest('[data-del-cat]');
     if (delBtn) {
@@ -1183,7 +1207,19 @@
         tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     }
-  });
+  }
+
+  if (categoryTabs) categoryTabs.addEventListener('click', handleCategoryTabClick);
+  const mobileCategoryTabsEl = document.getElementById('mobile-category-tabs');
+  if (mobileCategoryTabsEl) mobileCategoryTabsEl.addEventListener('click', handleCategoryTabClick);
+
+  // Bottom Add Category Button Listener (Mobile HP)
+  const btnBottomAddCat = document.getElementById('btn-bottom-add-category');
+  if (btnBottomAddCat) {
+    btnBottomAddCat.addEventListener('click', () => {
+      if (btnAddCategory) btnAddCategory.click();
+    });
+  }
 
   // Category Fold Toggle Listeners
   const btnToggleFoldCat = document.getElementById('btn-toggle-fold-cat');
@@ -2035,22 +2071,26 @@
         const catName = t.category || 'Operasional & Markas';
         return `
           <div class="cal-task-item uncompleted">
-            <div class="cal-task-title-group">
-              <span style="color:var(--danger);font-size:0.95rem;">❌</span>
-              <div class="cal-task-title" title="${esc(t.title)}">${esc(t.title)}</div>
-            </div>
-            <div class="cal-task-meta">
-              <span class="badge-tag category">🏷️ ${esc(catName)}</span>
-              <button 
-                type="button" 
-                class="btn-catchup" 
-                data-action="catchup-task" 
-                data-date="${dateStr}" 
-                data-id="${t.id}"
-                title="${isToday ? 'Tandai selesai sekarang' : 'Tandai diselesaikan secara susulan'}"
-              >
-                ✓ ${isToday ? 'Selesaikan' : 'Susulkan'}
-              </button>
+            <div class="cal-task-content">
+              <div class="cal-task-header-row">
+                <div class="cal-task-title-group">
+                  <span class="cal-task-icon" style="color:var(--danger);font-size:0.95rem;">❌</span>
+                  <div class="cal-task-title" title="${esc(t.title)}">${esc(t.title)}</div>
+                </div>
+                <button 
+                  type="button" 
+                  class="btn-catchup" 
+                  data-action="catchup-task" 
+                  data-date="${dateStr}" 
+                  data-id="${t.id}"
+                  title="${isToday ? 'Tandai selesai sekarang' : 'Tandai diselesaikan secara susulan'}"
+                >
+                  ✓ ${isToday ? 'Selesaikan' : 'Susulkan'}
+                </button>
+              </div>
+              <div class="cal-task-meta">
+                <span class="badge-tag category">🏷️ ${esc(catName)}</span>
+              </div>
             </div>
           </div>
         `;
@@ -2069,22 +2109,26 @@
         const catName = t.category || 'Operasional & Markas';
         return `
           <div class="cal-task-item completed">
-            <div class="cal-task-title-group">
-              <span style="color:var(--success);font-size:0.95rem;">✔️</span>
-              <div class="cal-task-title" title="${esc(t.title)}">${esc(t.title)}</div>
-            </div>
-            <div class="cal-task-meta">
-              <span class="badge-tag category">🏷️ ${esc(catName)}</span>
-              <button 
-                type="button" 
-                class="btn-icon-sm" 
-                data-action="uncatchup-task" 
-                data-date="${dateStr}" 
-                data-id="${t.id}"
-                title="Batalkan tanda selesai"
-              >
-                ↩
-              </button>
+            <div class="cal-task-content">
+              <div class="cal-task-header-row">
+                <div class="cal-task-title-group">
+                  <span class="cal-task-icon" style="color:var(--success);font-size:0.95rem;">✔️</span>
+                  <div class="cal-task-title" title="${esc(t.title)}">${esc(t.title)}</div>
+                </div>
+                <button 
+                  type="button" 
+                  class="btn-icon-sm" 
+                  data-action="uncatchup-task" 
+                  data-date="${dateStr}" 
+                  data-id="${t.id}"
+                  title="Batalkan tanda selesai"
+                >
+                  ↩
+                </button>
+              </div>
+              <div class="cal-task-meta">
+                <span class="badge-tag category">🏷️ ${esc(catName)}</span>
+              </div>
             </div>
           </div>
         `;

@@ -203,14 +203,29 @@
             </div>
           </div>
 
-          <!-- Legacy Category Section (Hidden from top, categories placed in bottom scroll bar) -->
-          <div class="category-section" id="category-section" style="display: none !important;">
-            <div id="category-collapse-toggle">
-              <span id="cat-fold-arrow"></span>
-              <span id="cat-active-pill"></span>
+          <!-- Category Bar (Tab Kategori Toko & Akun Berkelompok & Bisa Dilipat di Web) -->
+          <div class="category-section" id="category-section">
+            <div class="category-header">
+              <div class="category-label" id="category-collapse-toggle" style="cursor: pointer;" title="Klik untuk melipat atau membuka daftar kategori">
+                <span class="cat-fold-arrow" id="cat-fold-arrow">▼</span>
+                <span>📂</span> <strong>Kategori Toko &amp; Akun</strong>
+                <span class="cat-active-pill" id="cat-active-pill" style="display: none;"></span>
+              </div>
+              <div class="category-header-actions">
+                <button type="button" class="btn btn-secondary btn-sm btn-fold-toggle" id="btn-toggle-fold-cat" title="Lipat / Buka Kategori">
+                  <span id="cat-fold-btn-icon">▲</span> <span id="cat-fold-btn-text">Lipat Kategori</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-manage-categories" title="Kelola dan hapus kategori">
+                  ⚙️ Kelola Kategori
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="btn-add-category">
+                  ＋ Tambah Kategori
+                </button>
+              </div>
             </div>
-            <button type="button" id="btn-toggle-fold-cat"></button>
-            <button type="button" id="btn-manage-categories"></button>
+            <div id="category-tabs" class="category-tabs">
+              <!-- Rendered dynamically via app.js -->
+            </div>
           </div>
 
           <!-- Sticky Active Category Indicator (Hidden from top) -->
@@ -772,14 +787,14 @@
       </div>
     </div>
 
-    <!-- MOBILE & DESKTOP BOTTOM BAR (Pilihan Kategori Scroll ke Samping) -->
-    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Pilihan Kategori Toko &amp; Akun">
+    <!-- MOBILE BOTTOM BAR (Khusus Akses HP: Pilihan Kategori Scroll ke Samping) -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Pilihan Kategori Toko &amp; Akun di HP">
       <div class="mobile-bottom-cat-wrapper">
         <span class="mobile-cat-lead-icon" title="Pilihan Kategori Toko &amp; Akun">📂</span>
-        <div id="category-tabs" class="category-tabs mobile-category-scroll">
-          <!-- Rendered dynamically via app.js -->
+        <div id="mobile-category-tabs" class="category-tabs mobile-category-scroll">
+          <!-- Rendered dynamically via app.js for mobile -->
         </div>
-        <button type="button" class="btn-bottom-add-cat" id="btn-add-category" title="Tambah Kategori Toko / Akun Baru">
+        <button type="button" class="btn-bottom-add-cat" id="btn-bottom-add-category" title="Tambah Kategori Toko / Akun Baru">
           <span>＋</span>
         </button>
       </div>

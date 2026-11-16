@@ -2318,38 +2318,60 @@ body.light-theme .streak-pill {
 
 .cal-task-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 7px 10px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-sm);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
+  transition: all 0.15s ease;
 }
 
 .cal-task-item.uncompleted {
-  border-left: 3px solid var(--danger);
+  border-left: 4px solid var(--danger);
 }
 
 .cal-task-item.completed {
-  border-left: 3px solid var(--success);
+  border-left: 4px solid var(--success);
+}
+
+.cal-task-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.cal-task-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
 }
 
 .cal-task-title-group {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 7px;
   flex: 1;
   min-width: 0;
+}
+
+.cal-task-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .cal-task-title {
   font-weight: 600;
   color: var(--text-main);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.4;
+  word-break: break-word;
+  white-space: normal !important;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .cal-task-item.completed .cal-task-title {
@@ -2360,8 +2382,19 @@ body.light-theme .streak-pill {
 .cal-task-meta {
   display: flex;
   align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.cal-task-meta .badge-tag.category {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.3;
 }
 
 .btn-catchup {
@@ -2963,13 +2996,13 @@ body.light-theme .subtask-item {
 }
 
 /* ========================================================= */
-/* BOTTOM HORIZONTAL CATEGORY BAR (Desktop & Mobile)         */
+/* BOTTOM HORIZONTAL CATEGORY BAR (Khusus Mobile HP)         */
 /* ========================================================= */
 .mobile-bottom-nav {
-  display: flex !important;
+  display: none !important; /* Tersembunyi di web / laptop, aktif di HP */
   position: fixed;
   bottom: 0;
-  left: 275px; /* Aligned with sidebar on desktop */
+  left: 0;
   right: 0;
   height: 56px;
   background: rgba(19, 27, 46, 0.96);
@@ -2980,7 +3013,6 @@ body.light-theme .subtask-item {
   align-items: center;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.35);
   box-sizing: border-box;
-  transition: left 0.25s ease;
 }
 
 body.light-theme .mobile-bottom-nav {
@@ -4050,29 +4082,153 @@ body.light-theme .mobile-bottom-nav {
     font-size: 0.82rem;
   }
 
-  /* MOBILE BOTTOM NAVIGATION */
+  /* KATEGORI DI ATAS DISEMBUNYIKAN KHUSUS DI HP (PINDAH KE BAWAH) */
+  .category-section {
+    display: none !important;
+  }
+
+  /* MOBILE FLOATING BOTTOM DOCK - MENGAMBANG & SCROLL KE SAMPING */
   .mobile-bottom-nav {
     display: flex !important;
     position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 56px !important;
-    background: rgba(17, 24, 39, 0.96) !important;
-    backdrop-filter: blur(12px) !important;
-    border-top: 1px solid var(--panel-border) !important;
+    bottom: max(14px, env(safe-area-inset-bottom, 14px)) !important;
+    left: 12px !important;
+    right: 12px !important;
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    height: 52px !important;
+    background: rgba(15, 23, 42, 0.90) !important;
+    backdrop-filter: blur(18px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 999px !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.3) !important;
     align-items: center !important;
-    z-index: 100 !important;
-    padding: 0 8px calc(env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 1000 !important;
+    padding: 0 8px 0 12px !important;
     box-sizing: border-box !important;
+  }
+
+  body.light-theme .mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.94) !important;
+    border-color: rgba(99, 102, 241, 0.22) !important;
+    box-shadow: 0 12px 36px rgba(99, 102, 241, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .mobile-bottom-cat-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .mobile-cat-lead-icon {
+    font-size: 1rem !important;
+    color: var(--accent) !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0.9 !important;
+  }
+
+  .mobile-category-scroll {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    white-space: nowrap !important;
+    flex: 1 !important;
+    height: 100% !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0 2px !important;
+    scroll-behavior: smooth !important;
+  }
+
+  .mobile-category-scroll::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .mobile-category-scroll .cat-tab {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 6px 12px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    transition: all 0.18s ease !important;
+  }
+
+  body.light-theme .mobile-category-scroll .cat-tab {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .mobile-category-scroll .cat-tab:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: var(--text-main) !important;
+  }
+
+  .mobile-category-scroll .cat-tab.active {
+    background: linear-gradient(135deg, var(--accent), #4f46e5) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45) !important;
+    transform: scale(1.02) !important;
+  }
+
+  .mobile-category-scroll .cat-tab-badge {
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: inherit !important;
+    padding: 1px 5px !important;
+    border-radius: 999px !important;
+  }
+
+  .btn-bottom-add-cat {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: var(--accent) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 1.25rem !important;
+    font-weight: bold !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    margin-left: 4px !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.45) !important;
+    transition: transform 0.18s ease, background 0.18s ease !important;
+  }
+
+  .btn-bottom-add-cat:hover {
+    transform: scale(1.08) !important;
+    background: #4f46e5 !important;
   }
 
   .mobile-nav-btn {
     display: none !important;
   }
 
+  /* Ruang bawah yang luas agar konten tugas & kalender paling bawah TIDAK tertutup dock mengambang */
   .pages-wrapper {
-    padding: 8px 8px 95px !important;
+    padding: 8px 8px 115px !important;
   }
 }
 
@@ -4091,6 +4247,6 @@ body.light-theme .mobile-bottom-nav {
   }
 
   .pages-wrapper {
-    padding: 6px 6px 95px !important;
+    padding: 6px 6px 115px !important;
   }
 }
