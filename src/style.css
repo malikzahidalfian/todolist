@@ -4142,11 +4142,39 @@ body.light-theme .mobile-bottom-nav {
     overflow-y: hidden !important;
     scrollbar-width: none !important;
     white-space: nowrap !important;
-    flex: 1 !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
     height: 100% !important;
     -webkit-overflow-scrolling: touch !important;
     padding: 0 2px !important;
     scroll-behavior: smooth !important;
+    touch-action: pan-x !important;
+    overscroll-behavior-x: contain !important;
+    pointer-events: auto !important;
+  }
+
+  /* Keep the rendered tabs wider than the viewport so the scroll area has
+     real horizontal overflow on iOS and Android flex layouts. */
+  .mobile-category-scroll .cat-groups-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: max-content !important;
+    min-width: max-content !important;
+    flex: 0 0 auto !important;
+    gap: 6px !important;
+  }
+
+  .mobile-category-scroll .cat-group-card {
+    width: max-content !important;
+    min-width: max-content !important;
+    flex: 0 0 auto !important;
+  }
+
+  .mobile-category-scroll .cat-group-tabs {
+    width: max-content !important;
+    min-width: max-content !important;
+    flex: 0 0 auto !important;
   }
 
   .mobile-category-scroll::-webkit-scrollbar {
