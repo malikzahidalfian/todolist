@@ -4082,181 +4082,23 @@ body.light-theme .mobile-bottom-nav {
     font-size: 0.82rem;
   }
 
-  /* KATEGORI DI ATAS DISEMBUNYIKAN KHUSUS DI HP (PINDAH KE BAWAH) */
+  /* Tampilkan kategori di atas seperti layout desktop. */
   .category-section {
-    display: none !important;
+    display: flex !important;
   }
 
-  /* MOBILE FLOATING BOTTOM DOCK - MENGAMBANG & SCROLL KE SAMPING */
+  /* Kategori tidak lagi memakai dock di bagian bawah layar. */
   .mobile-bottom-nav {
-    display: flex !important;
-    position: fixed !important;
-    bottom: max(14px, env(safe-area-inset-bottom, 14px)) !important;
-    left: 12px !important;
-    right: 12px !important;
-    max-width: 480px !important;
-    margin: 0 auto !important;
-    height: 52px !important;
-    background: rgba(15, 23, 42, 0.90) !important;
-    backdrop-filter: blur(18px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 999px !important;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.3) !important;
-    align-items: center !important;
-    z-index: 1000 !important;
-    padding: 0 8px 0 12px !important;
-    box-sizing: border-box !important;
-  }
-
-  body.light-theme .mobile-bottom-nav {
-    background: rgba(255, 255, 255, 0.94) !important;
-    border-color: rgba(99, 102, 241, 0.22) !important;
-    box-shadow: 0 12px 36px rgba(99, 102, 241, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-  }
-
-  .mobile-bottom-cat-wrapper {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 0 !important;
-  }
-
-  .mobile-cat-lead-icon {
-    font-size: 1rem !important;
-    color: var(--accent) !important;
-    flex-shrink: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    opacity: 0.9 !important;
-  }
-
-  .mobile-category-scroll {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scrollbar-width: none !important;
-    white-space: nowrap !important;
-    flex: 1 1 0% !important;
-    min-width: 0 !important;
-    height: 100% !important;
-    -webkit-overflow-scrolling: touch !important;
-    padding: 0 2px !important;
-    scroll-behavior: smooth !important;
-    touch-action: pan-x !important;
-    overscroll-behavior-x: contain !important;
-    pointer-events: auto !important;
-  }
-
-  /* Keep the rendered tabs wider than the viewport so the scroll area has
-     real horizontal overflow on iOS and Android flex layouts. */
-  .mobile-category-scroll .cat-groups-wrapper {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    width: max-content !important;
-    min-width: max-content !important;
-    flex: 0 0 auto !important;
-    gap: 6px !important;
-  }
-
-  .mobile-category-scroll .cat-group-card {
-    width: max-content !important;
-    min-width: max-content !important;
-    flex: 0 0 auto !important;
-  }
-
-  .mobile-category-scroll .cat-group-tabs {
-    width: max-content !important;
-    min-width: max-content !important;
-    flex: 0 0 auto !important;
-  }
-
-  .mobile-category-scroll::-webkit-scrollbar {
     display: none !important;
-  }
-
-  .mobile-category-scroll .cat-tab {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 5px !important;
-    padding: 6px 12px !important;
-    border-radius: 999px !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.09) !important;
-    font-size: 0.8rem !important;
-    font-weight: 600 !important;
-    color: var(--text-muted) !important;
-    cursor: pointer !important;
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-    transition: all 0.18s ease !important;
-  }
-
-  body.light-theme .mobile-category-scroll .cat-tab {
-    background: rgba(0, 0, 0, 0.04) !important;
-    border-color: rgba(0, 0, 0, 0.08) !important;
-  }
-
-  .mobile-category-scroll .cat-tab:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: var(--text-main) !important;
-  }
-
-  .mobile-category-scroll .cat-tab.active {
-    background: linear-gradient(135deg, var(--accent), #4f46e5) !important;
-    color: #ffffff !important;
-    border-color: transparent !important;
-    font-weight: 700 !important;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45) !important;
-    transform: scale(1.02) !important;
-  }
-
-  .mobile-category-scroll .cat-tab-badge {
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
-    background: rgba(255, 255, 255, 0.22) !important;
-    color: inherit !important;
-    padding: 1px 5px !important;
-    border-radius: 999px !important;
-  }
-
-  .btn-bottom-add-cat {
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 50% !important;
-    background: var(--accent) !important;
-    border: none !important;
-    color: #ffffff !important;
-    font-size: 1.25rem !important;
-    font-weight: bold !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    flex-shrink: 0 !important;
-    margin-left: 4px !important;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.45) !important;
-    transition: transform 0.18s ease, background 0.18s ease !important;
-  }
-
-  .btn-bottom-add-cat:hover {
-    transform: scale(1.08) !important;
-    background: #4f46e5 !important;
   }
 
   .mobile-nav-btn {
     display: none !important;
   }
 
-  /* Ruang bawah yang luas agar konten tugas & kalender paling bawah TIDAK tertutup dock mengambang */
+  /* Tanpa dock bawah, tidak perlu ruang kosong tambahan di akhir halaman. */
   .pages-wrapper {
-    padding: 8px 8px 115px !important;
+    padding: 8px 8px 24px !important;
   }
 }
 

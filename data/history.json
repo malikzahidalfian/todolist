@@ -198,6 +198,29 @@
     "tasks": [
       {
         "id": "todo-1794636118306-vw0q",
+        "type": "daily",
+        "title": "Buat 10 Video Per Hari , 1 Video Setiap Produk",
+        "category": "Akun Affiliate @reviewsepatucowok",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      },
+      {
+        "id": "todo-daily-2",
+        "type": "daily",
+        "title": "Upload 5 Video Setiap Hari di Shopee Video",
+        "category": "Ricko's Media Player - Shopee",
+        "priority": "medium",
+        "completed": false,
+        "completedAt": null
+      }
+    ]
+  },
+  "2026-11-17": {
+    "date": "2026-11-17",
+    "tasks": [
+      {
+        "id": "todo-1794636118306-vw0q",
         "title": "Buat 10 Video Per Hari , 1 Video Setiap Produk",
         "type": "daily",
         "category": "Akun Affiliate @reviewsepatucowok",
@@ -210,15 +233,6 @@
         "title": "Upload 5 Video Setiap Hari di Shopee Video",
         "type": "daily",
         "category": "Ricko's Media Player - Shopee",
-        "priority": "medium",
-        "completed": false,
-        "completedAt": null
-      },
-      {
-        "id": "todo-daily-zyra",
-        "title": "Update stok katalog cincin & balas chat customer",
-        "type": "daily",
-        "category": "Toko Zyra Jewelry",
         "priority": "medium",
         "completed": false,
         "completedAt": null
