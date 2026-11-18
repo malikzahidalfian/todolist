@@ -962,19 +962,25 @@
         groupCats.forEach(cat => {
           const count = todos.filter(t => t.category === cat.name).length;
           const isSelected = selectedCategory === cat.name;
-          const canDelete = categories.length > 1;
 
           mobTabsHtml += `
             <div class="cat-tab ${isSelected ? 'active' : ''}" data-cat="${esc(cat.name)}" title="Lihat tugas ${esc(cat.name)}">
               <span>${esc(cat.icon || '📁')}</span>
               <span>${esc(cat.name)}</span>
               <span class="cat-tab-badge">${count}</span>
-              ${canDelete ? `<button type="button" class="btn-del-cat" data-del-cat="${esc(cat.id)}" title="Hapus kategori ${esc(cat.name)}">&times;</button>` : ''}
             </div>
           `;
         });
       });
       mobileCategoryTabs.innerHTML = mobTabsHtml;
+
+      // Auto scroll active category tab into view
+      const activeMobTab = mobileCategoryTabs.querySelector('.cat-tab.active');
+      if (activeMobTab && typeof activeMobTab.scrollIntoView === 'function') {
+        activeMobTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+
+      setupDraggableCategoryScroll(mobileCategoryTabs);
     }
 
     // Update active category pill for collapsed state
@@ -1203,15 +1209,74 @@
         switchPage('jobdesk');
       }
       renderAll();
-      if (tab.scrollIntoView) {
-        tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      }
     }
+  }
+
+  // Draggable horizontal scroll helper for mobile/desktop category tabs
+  function setupDraggableCategoryScroll(slider) {
+    if (!slider || slider._dragInitialized) return;
+    slider._dragInitialized = true;
+
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasDragged = false;
+
+    slider.addEventListener('mousedown', (e) => {
+      if (e.target.closest('button')) return;
+      isDown = true;
+      slider.classList.add('is-dragging');
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+      hasDragged = false;
+    });
+
+    const stopDragging = () => {
+      if (!isDown) return;
+      isDown = false;
+      slider.classList.remove('is-dragging');
+      setTimeout(() => {
+        hasDragged = false;
+      }, 80);
+    };
+
+    slider.addEventListener('mouseleave', stopDragging);
+    slider.addEventListener('mouseup', stopDragging);
+
+    slider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      if (Math.abs(walk) > 4) {
+        hasDragged = true;
+        e.preventDefault();
+        slider.scrollLeft = scrollLeft - walk;
+      }
+    });
+
+    // Capture phase click handler to intercept click if user was dragging
+    slider.addEventListener('click', (e) => {
+      if (hasDragged) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+      }
+    }, true);
+
+    // Mouse wheel horizontal scroll support
+    slider.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0 && e.deltaX === 0) {
+        slider.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    }, { passive: false });
   }
 
   if (categoryTabs) categoryTabs.addEventListener('click', handleCategoryTabClick);
   const mobileCategoryTabsEl = document.getElementById('mobile-category-tabs');
-  if (mobileCategoryTabsEl) mobileCategoryTabsEl.addEventListener('click', handleCategoryTabClick);
+  if (mobileCategoryTabsEl) {
+    mobileCategoryTabsEl.addEventListener('click', handleCategoryTabClick);
+    setupDraggableCategoryScroll(mobileCategoryTabsEl);
+  }
 
   // Bottom Add Category Button Listener (Mobile HP)
   const btnBottomAddCat = document.getElementById('btn-bottom-add-category');
@@ -1720,18 +1785,15 @@
     }).join('');
   }
 
-  // Render Single Task Card Helper
+  // Render Single Task Card Helper (Tampilan Bersih: Judul Jobdesk, Tombol Hapus & Ubah)
   function renderTaskCard(item) {
     const isDone = Boolean(item.completed);
-    const priority = item.priority || 'medium';
-    const typeLabel = item.type === 'daily' ? '🔄 Harian' : '📌 Umum';
     const streakHtml = item.type === 'daily' && item.streak > 0 
       ? `<span class="streak-pill" title="${item.streak} hari berturut-turut selesai!">🔥 ${item.streak} hari</span>` 
       : '';
 
-    // Subtasks calculation for general tasks (Default Tertutup / Collapsed Dropdown)
+    // Subtasks calculation for general tasks (Hanya tampil jika ada subtask atau sedang dibuka)
     let subtasksHtml = '';
-    let progressBadgeHtml = '';
     if (item.type === 'general') {
       const subtasks = Array.isArray(item.subtasks) ? item.subtasks : [];
       const totalSub = subtasks.length;
@@ -1739,71 +1801,73 @@
       const pct = totalSub > 0 ? Math.round((doneSub / totalSub) * 100) : (item.completed ? 100 : 0);
       const isOpen = openSubtaskIds.has(String(item.id));
 
-      progressBadgeHtml = `
-        <span class="badge-progress ${pct === 100 ? 'done' : ''}">
-          ${totalSub > 0 ? `${doneSub}/${totalSub} (${pct}%)` : `${pct}%`}
-        </span>
-      `;
+      if (totalSub > 0 || isOpen) {
+        const subtaskListItems = subtasks.map(s => `
+          <div class="subtask-item">
+            <input 
+              type="checkbox" 
+              class="subtask-checkbox" 
+              ${s.completed ? 'checked' : ''} 
+              data-action="toggle-subtask" 
+              data-task-id="${item.id}" 
+              data-subtask-id="${s.id}"
+            >
+            <span class="subtask-title ${s.completed ? 'completed' : ''}">${esc(s.title)}</span>
+            <button 
+              type="button" 
+              class="btn-subtask-del" 
+              data-action="delete-subtask" 
+              data-task-id="${item.id}" 
+              data-subtask-id="${s.id}" 
+              title="Hapus sub-tugas"
+            >&times;</button>
+          </div>
+        `).join('');
 
-      const subtaskListItems = subtasks.map(s => `
-        <div class="subtask-item">
-          <input 
-            type="checkbox" 
-            class="subtask-checkbox" 
-            ${s.completed ? 'checked' : ''} 
-            data-action="toggle-subtask" 
-            data-task-id="${item.id}" 
-            data-subtask-id="${s.id}"
-          >
-          <span class="subtask-title ${s.completed ? 'completed' : ''}">${esc(s.title)}</span>
-          <button 
-            type="button" 
-            class="btn-subtask-del" 
-            data-action="delete-subtask" 
-            data-task-id="${item.id}" 
-            data-subtask-id="${s.id}" 
-            title="Hapus sub-tugas"
-          >&times;</button>
-        </div>
-      `).join('');
-
-      subtasksHtml = `
-        <div class="subtask-section subtask-dropdown-container ${isOpen ? 'is-open' : 'is-closed'}">
-          <button 
-            type="button" 
-            class="subtask-dropdown-toggle" 
-            data-action="toggle-subtask-dropdown" 
-            data-task-id="${item.id}"
-            title="Klik untuk membuka / menutup sub-jobdesk"
-            aria-expanded="${isOpen}"
-          >
-            <span class="subtask-toggle-left">
-              <span class="subtask-toggle-arrow ${isOpen ? 'open' : ''}">${isOpen ? '▼' : '▶'}</span>
-              <span class="subtask-toggle-label">Sub-jobdesk ${totalSub > 0 ? `(${doneSub}/${totalSub})` : ''}</span>
-            </span>
-            <span class="badge-progress ${pct === 100 ? 'done' : ''}">${pct}% Selesai</span>
-          </button>
-          <div class="subtask-dropdown-body" style="${isOpen ? 'display: block;' : 'display: none;'}">
-            ${totalSub > 0 ? `
-              <div class="subtask-progress-bar">
-                <div class="subtask-progress-fill ${pct === 100 ? 'done' : ''}" style="width: ${pct}%;"></div>
+        subtasksHtml = `
+          <div class="subtask-section subtask-dropdown-container ${isOpen ? 'is-open' : 'is-closed'}">
+            <button 
+              type="button" 
+              class="subtask-dropdown-toggle" 
+              data-action="toggle-subtask-dropdown" 
+              data-task-id="${item.id}"
+              title="Klik untuk membuka / menutup sub-jobdesk"
+              aria-expanded="${isOpen}"
+            >
+              <span class="subtask-toggle-left">
+                <span class="subtask-toggle-arrow ${isOpen ? 'open' : ''}">${isOpen ? '▼' : '▶'}</span>
+                <span class="subtask-toggle-label">Sub-jobdesk ${totalSub > 0 ? `(${doneSub}/${totalSub})` : ''}</span>
+              </span>
+              <span class="badge-progress ${pct === 100 ? 'done' : ''}">${pct}% Selesai</span>
+            </button>
+            <div class="subtask-dropdown-body" style="${isOpen ? 'display: block;' : 'display: none;'}">
+              ${totalSub > 0 ? `
+                <div class="subtask-progress-bar">
+                  <div class="subtask-progress-fill ${pct === 100 ? 'done' : ''}" style="width: ${pct}%;"></div>
+                </div>
+                <div class="subtask-list">${subtaskListItems}</div>
+              ` : `
+                <div class="subtask-list subtask-empty-hint">Belum ada sub-jobdesk. Tambahkan rincian di bawah:</div>
+              `}
+              <div class="subtask-add-row">
+                <input type="text" class="input-subtask" placeholder="＋ Tambah sub-jobdesk..." data-task-id="${item.id}" maxlength="150">
+                <button type="button" class="btn btn-secondary btn-xs btn-add-subtask" data-task-id="${item.id}">Tambah</button>
               </div>
-              <div class="subtask-list">${subtaskListItems}</div>
-            ` : `
-              <div class="subtask-list subtask-empty-hint">Belum ada sub-jobdesk. Tambahkan rincian di bawah:</div>
-            `}
-            <div class="subtask-add-row">
-              <input type="text" class="input-subtask" placeholder="＋ Tambah sub-jobdesk..." data-task-id="${item.id}" maxlength="150">
-              <button type="button" class="btn btn-secondary btn-xs btn-add-subtask" data-task-id="${item.id}">Tambah</button>
             </div>
           </div>
-        </div>
-      `;
+        `;
+      }
     }
 
-    const targetStatusHtml = item.type === 'target' 
-      ? `<span class="target-status-badge ${isDone ? 'achieved' : 'pending'}" style="margin-left: 4px;">${isDone ? '🏆 Tercapai' : '🎯 Sedang Dikejar'}</span>` 
-      : '';
+    const metaParts = [streakHtml].filter(Boolean);
+    const metaHtml = metaParts.length > 0 ? `<div class="todo-meta">${metaParts.join('')}</div>` : '';
+
+    const bodyHtml = (metaHtml || subtasksHtml) ? `
+      <div class="todo-card-body">
+        ${metaHtml}
+        ${subtasksHtml}
+      </div>
+    ` : '';
 
     return `
       <div class="todo-item ${isDone ? 'completed' : ''}" data-id="${item.id}">
@@ -1819,22 +1883,11 @@
             <div class="todo-title">${esc(item.title)}</div>
           </div>
           <div class="todo-actions">
-            <button class="btn-icon-sm btn-edit-task" title="Edit Tugas" data-id="${item.id}">✏️</button>
-            <button class="btn-icon-sm danger btn-delete-task" title="Hapus Tugas" data-id="${item.id}">🗑️</button>
+            <button class="btn-icon-sm btn-edit-task" title="Ubah Tugas" data-id="${item.id}" aria-label="Ubah">✏️</button>
+            <button class="btn-icon-sm danger btn-delete-task" title="Hapus Tugas" data-id="${item.id}" aria-label="Hapus">🗑️</button>
           </div>
         </div>
-        <div class="todo-card-body">
-          <div class="todo-meta">
-            <span class="badge-type ${item.type}">${typeLabel}</span>
-            <span class="badge-tag priority-${priority}">
-              ${priority === 'high' ? '🔥 Tinggi' : priority === 'medium' ? '⚡ Sedang' : '☕ Rendah'}
-            </span>
-            ${streakHtml}
-            ${progressBadgeHtml}
-            ${targetStatusHtml}
-          </div>
-          ${subtasksHtml}
-        </div>
+        ${bodyHtml}
       </div>
     `;
   }
